@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap");
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  /* --text-primary:    */
+}
+
+html {
+  font-family: "SN Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-size: normal;
+}
+
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
