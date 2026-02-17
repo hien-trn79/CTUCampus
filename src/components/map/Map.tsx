@@ -240,6 +240,6 @@ export default function Map() {
       id="map"
       ref={mapContainer}
       style={{ width: "100vw", height: "100vh" }}
-    />
+    ></div>
   );
 }
