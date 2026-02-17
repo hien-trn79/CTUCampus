@@ -11,6 +11,7 @@ export default function MapCanvas() {
     iconAnchor: [12, 41],
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const createClusterCustomIcon = (cluster: any) => {
     return new DivIcon({
       html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
