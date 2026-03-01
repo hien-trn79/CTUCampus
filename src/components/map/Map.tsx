@@ -1,10 +1,12 @@
 import * as GEOLIB from "geolib";
 import maplibregl from "maplibre-gl";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import MapGeolocate from "./MapGeolocate";
 
 export default function Map() {
   const mapContainer = useRef<HTMLDivElement>(null);
+  const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -37,9 +39,36 @@ export default function Map() {
       scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits(),
     };
 
-    const camera = new THREE.Camera();
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000,
+    );
     const scene = new THREE.Scene();
     let renderer: THREE.WebGLRenderer;
+
+    // common function to calculate relative position
+    const GPSRelativePosition = (
+      objPosi: [number, number],
+      centerPosi: [number, number],
+    ) => {
+      // Chuyển từ GeoJSON [lon, lat] sang format geolib cần {lat, lon}
+      const objGeolib = { latitude: objPosi[1], longitude: objPosi[0] };
+      const centerGeolib = {
+        latitude: centerPosi[1],
+        longitude: centerPosi[0],
+      };
+
+      const dis = GEOLIB.getDistance(objGeolib, centerGeolib);
+      const bearing = GEOLIB.getRhumbLineBearing(centerGeolib, objGeolib);
+
+      // Tính toán vị trí tương đối dựa trên khoảng cách và hướng
+      let x = dis * Math.sin((bearing * Math.PI) / 180);
+      let y = dis * Math.cos((bearing * Math.PI) / 180);
+
+      return [x, y];
+    };
 
     const customLayer = {
       id: "3d-model",
@@ -49,7 +78,7 @@ export default function Map() {
       onAdd(map: maplibregl.Map, gl: WebGLRenderingContext) {
         renderer = new THREE.WebGLRenderer({
           canvas: map.getCanvas(),
-          context: gl, // ⭐ Bắt buộc
+          context: gl,
           antialias: true,
         });
         renderer.autoClear = false;
@@ -79,6 +108,7 @@ export default function Map() {
 
         scene.add(ambientLight, dirLight, pointLight1, pointLight2);
 
+        // render shape
         const genShape = (
           points: Array<[number, number]>,
           center: [number, number],
@@ -97,6 +127,20 @@ export default function Map() {
           return shape;
         };
 
+        const genShape2 = (polygon: Array<[number, number]>) => {
+          const shape = new THREE.Shape();
+          polygon.forEach((point, index) => {
+            const merc = maplibregl.MercatorCoordinate.fromLngLat(point);
+            const relative = GPSRelativePosition(
+              [point[0], point[1]],
+              modelOrigin,
+            );
+            console.log("Relative Position:", relative);
+            console.log("Mercator Coordinate:", merc);
+          });
+        };
+
+        // render geometry
         const genGeometry = (
           shape: THREE.Shape,
           options: {
@@ -115,12 +159,13 @@ export default function Map() {
           element: Array<[number, number]>,
           height: number,
         ) => {
+          // let shape = genShape2(element);
           let shape = genShape(element, modelOrigin);
 
           // Tạo geometry SAU KHI đã thêm hết tất cả các điểm
           let geometry = genGeometry(shape, {
             curveSegments: 1,
-            depth: 0.02 * (height || 10),
+            depth: 2 * height || 15,
             bevelEnabled: false,
           });
 
@@ -128,7 +173,6 @@ export default function Map() {
 
           let mesh = new THREE.Mesh(geometry, material);
           mesh.rotateX(-Math.PI / 2);
-          mesh.scale.set(100, 100, 100);
           scene.add(mesh);
         };
 
@@ -144,10 +188,9 @@ export default function Map() {
 
                   if (!feature["properties"]) return;
                   if (feature.properties["building"]) {
-                    let coordinates = feature.geometry.coordinates;
-                    for (let i = 0; i < coordinates.length; i++) {
-                      let element = coordinates[i];
-                      addBuilding(element, feature.properties["height"]);
+                    if (feature.geometry.type === "Polygon") {
+                      const outerRing = feature.geometry.coordinates[0];
+                      addBuilding(outerRing, feature.properties["height"]);
                     }
                   }
                 }
@@ -159,30 +202,10 @@ export default function Map() {
         };
 
         // GeoJSON format: [longitude, latitude]
-        const GPSRelativePosition = (
-          objPosi: [number, number],
-          centerPosi: [number, number],
-        ) => {
-          // Chuyển từ GeoJSON [lon, lat] sang format geolib cần {lat, lon}
-          const objGeolib = { latitude: objPosi[1], longitude: objPosi[0] };
-          const centerGeolib = {
-            latitude: centerPosi[1],
-            longitude: centerPosi[0],
-          };
-
-          const dis = GEOLIB.getDistance(objGeolib, centerGeolib);
-          const bearing = GEOLIB.getRhumbLineBearing(centerGeolib, objGeolib);
-
-          // Tính toán vị trí tương đối dựa trên khoảng cách và hướng
-          let x = dis * Math.sin((bearing * Math.PI) / 180);
-          let y = dis * Math.cos((bearing * Math.PI) / 180);
-
-          return [x / 100, y / 100];
-        };
 
         getGeoJSON();
       },
-
+      // thiet lap ban do bang MapLibre GL
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render(gl: WebGLRenderingContext, args: any) {
         const rotationX = new THREE.Matrix4().makeRotationAxis(
@@ -218,15 +241,29 @@ export default function Map() {
           .multiply(rotationY)
           .multiply(rotationZ);
 
-        camera.projectionMatrix = m.multiply(l);
-        renderer.resetState();
+        const finalMatrix = new THREE.Matrix4().multiplyMatrices(m, l);
+        camera.projectionMatrix.copy(finalMatrix);
+
+        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+        camera.matrixWorld.identity();
+        camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+
+        scene.updateMatrixWorld(true);
+
         renderer.render(scene, camera);
+        renderer.resetState();
       },
     } as maplibregl.CustomLayerInterface;
 
     map.on("style.load", () => {
       map.addLayer(customLayer);
     });
+
+    map.on("resize", () => {
+      map.triggerRepaint();
+    });
+
+    setMapInstance(map);
 
     return () => {
       map.remove();
@@ -240,6 +277,8 @@ export default function Map() {
       id="map"
       ref={mapContainer}
       style={{ width: "100vw", height: "100vh" }}
-    ></div>
+    >
+      <MapGeolocate mapInstance={mapInstance} />
+    </div>
   );
 }
