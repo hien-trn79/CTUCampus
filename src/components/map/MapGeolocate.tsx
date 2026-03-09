@@ -56,7 +56,13 @@ export default function MapControl({ mapInstance }: MapControlProps) {
     }
 
     return () => {
-      map?.removeControl(geolocate);
+      if (map && geolocate && map?.hasControl(geolocate)) {
+        try {
+          map.removeControl(geolocate);
+        } catch (error) {
+          console.error("Error removing geolocate control:", error);
+        }
+      }
     };
   }, [map]);
   return <div className="map_geolocate"></div>;
