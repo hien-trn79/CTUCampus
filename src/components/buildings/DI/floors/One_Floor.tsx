@@ -10,9 +10,7 @@ export default function G_Floor({
 
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "/assets/CICT/demo/CICT_TangG_demo (1).geojson",
-        );
+        const response = await fetch("/assets/CICT/demo/CICT_wall_(4).geojson");
         const jsonData = await response.json();
         setData(jsonData);
       } catch (error) {
@@ -25,59 +23,56 @@ export default function G_Floor({
 
   useEffect(() => {
     if (!data || !mapInstance) return;
-    mapInstance.addSource("di_g_floor", {
+    mapInstance.addSource("di_one_floor", {
       type: "geojson",
       data: data,
     });
 
     mapInstance.addLayer({
-      id: "di_g_floor_layer",
+      id: "di_one_floor_layer",
       type: "fill-extrusion",
-      source: "di_g_floor",
+      source: "di_one_floor",
       paint: {
         "fill-extrusion-color": [
           "match",
           ["get", "Layer"],
           "wall",
           "#A0A095",
+          "room",
+          "#85D1DB",
           "corridor",
           "#D3D3D3",
           "wc",
           "#448061",
-          "room",
-          "#85D1DB",
-          "hangrao",
-          "#FF634A",
-          "sanco",
-          "#8DD691",
-          "hoca",
-          "#57B9FF",
+          "hoitruong",
+          "#D97068",
           "stair",
           "#FECB00",
+          "hangrao",
+          "#FF634A",
           "#ccc",
         ],
         "fill-extrusion-height": [
           "match",
           ["get", "Layer"],
           "wall",
-          4,
+          12,
           "stair",
-          1,
+          10.5,
           "hangrao",
-          1.5,
-          "sanco",
-          0.8,
-          0.2,
+          9,
+          8,
         ],
-        "fill-extrusion-base": 0.2,
+        "fill-extrusion-base": 7,
         "fill-extrusion-opacity": 1,
       },
+      maxzoom: 19,
     });
   }, [mapInstance, data]);
 
   return (
-    <div className="g_floor">
-      <h1>G Floor of CICT</h1>
+    <div className="one_floor">
+      <h1>One Floor of CICT</h1>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import MapGeolocate from "./MapGeolocate";
 import G_Floor from "../buildings/DI/floors/G_Floor";
+import One_Floor from "../buildings/DI/floors/One_Floor";
 
 export default function Map() {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -69,7 +70,7 @@ export default function Map() {
             0.9,
           ],
         },
-        maxzoom: 19,
+        maxzoom: 18.5,
       });
     });
   }, [dataCanTho, mapInstance]);
@@ -82,6 +83,7 @@ export default function Map() {
     >
       <MapGeolocate mapInstance={mapInstance} />
       <G_Floor mapInstance={mapInstance} />
+      <One_Floor mapInstance={mapInstance} />
     </div>
   );
 }
