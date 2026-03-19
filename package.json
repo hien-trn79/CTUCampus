@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "geolib": "^3.3.4",
     "leaflet": "^1.9.4",
+    "leaflet-routing-machine": "^3.2.12",
     "maplibre-gl": "^5.18.0",
     "react": "^19.0.0-rc.1",
     "react-dom": "^19.0.0-rc.1",
