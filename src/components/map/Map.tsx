@@ -4,6 +4,9 @@ import MapGeolocate from "./MapGeolocate";
 import G_Floor from "../buildings/DI/floors/G_Floor";
 import One_Floor from "../buildings/DI/floors/One_Floor";
 
+import * as turf from "@turf/turf";
+import { center } from "@turf/center";
+
 export default function Map() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
@@ -31,15 +34,19 @@ export default function Map() {
     mapObj: maplibregl.Map,
   ) => {
     try {
+      // call API
       const query = await fetch(
         `https://router.project-osrm.org/route/v1/driving/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&overview=full`,
       );
+      // trả về kết quả dưới dạng JSON
       const json = await query.json();
       if (!json.routes || json.routes.length === 0) return;
       const data = json.routes[0];
       const route = data.geometry;
 
+      // thêm source vào maplibre
       const source = mapObj.getSource("route") as maplibregl.GeoJSONSource;
+      // cập nhật dữ liệu cho source
       if (source) {
         source.setData({
           type: "Feature",
@@ -63,6 +70,7 @@ export default function Map() {
     });
 
     map.on("load", () => {
+      // thêm source và layer cho route ngay khi map load xong
       map.addSource("route", {
         type: "geojson",
         data: {
@@ -75,6 +83,7 @@ export default function Map() {
         },
       });
 
+      // Thêm layer cho route đến 2 marker
       map.addLayer({
         id: "route_layer",
         type: "line",
@@ -87,44 +96,87 @@ export default function Map() {
       });
     });
 
-    let currentMarkers: maplibregl.Marker[] = [];
-    let currentPoints: [number, number][] = [];
+    const hoverPopup = new maplibregl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      offset: 25,
+    });
 
-    const handleMapClick = (e: maplibregl.MapMouseEvent) => {
-      const coords = [e.lngLat.lng, e.lngLat.lat] as [number, number];
+    const currentMarkers_layerCTU: maplibregl.Marker[] = [];
+    const currentPoints_layerCTU: [number, number][] = [];
 
-      // Nếu đã có 2 điểm thì reset để chọn lại từ đầu
-      if (currentPoints.length === 2) {
-        currentPoints = [];
-        currentMarkers.forEach((m) => m.remove());
-        currentMarkers = [];
+    map.on("click", "khu_ii_dhct_layer", (e) => {
+      const props = e.features?.[0].properties;
+      const features = e.features?.[0];
+      if (!props || !features) return;
+      const centerPoint = center(features);
 
-        const source = map.getSource("route") as maplibregl.GeoJSONSource;
-        if (source) {
-          source.setData({
-            type: "Feature",
-            properties: {},
-            geometry: { type: "LineString", coordinates: [] },
-          });
-        }
+      if (currentPoints_layerCTU.length === 2) {
+        currentPoints_layerCTU.length = 0;
+        currentMarkers_layerCTU.forEach((m) => m.remove());
+        currentMarkers_layerCTU.length = 0;
       }
 
-      currentPoints.push(coords);
-      const marker = new maplibregl.Marker().setLngLat(coords).addTo(map);
-      currentMarkers.push(marker);
+      const marker = new maplibregl.Marker({ color: "red" })
+        .setLngLat(centerPoint.geometry.coordinates as [number, number])
+        .addTo(map);
 
-      if (currentPoints.length === 2) {
-        getRoute(currentPoints[0], currentPoints[1], map);
+      currentMarkers_layerCTU.push(marker);
+      currentPoints_layerCTU.push(
+        centerPoint.geometry.coordinates as [number, number],
+      );
+
+      if (currentPoints_layerCTU.length === 2) {
+        getRoute(currentPoints_layerCTU[0], currentPoints_layerCTU[1], map);
       }
-    };
 
-    map.on("click", handleMapClick);
+      const markerElement = marker.getElement();
+      markerElement.addEventListener("mouseenter", () => {
+        const lngLat = marker.getLngLat();
+        hoverPopup
+          .setLngLat(lngLat)
+          .setText(props["name"] || "Khu II")
+          .addTo(map);
+      });
+      markerElement.addEventListener("mouseleave", () => {
+        hoverPopup.remove();
+      });
+    });
+
+    // Click vào vị trí bất kỳ ngoài tòa nhà
+    map.on("click", (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ["khu_ii_dhct_layer"],
+      });
+
+      // Nếu click trúng layer thì bỏ qua, đã xử lý ở trên
+      if (features.length > 0) return;
+
+      if (currentPoints_layerCTU.length === 2) {
+        currentPoints_layerCTU.length = 0;
+        currentMarkers_layerCTU.forEach((m) => m.remove());
+        currentMarkers_layerCTU.length = 0;
+      }
+
+      const lngLat = e.lngLat;
+      const coords: [number, number] = [lngLat.lng, lngLat.lat];
+
+      const marker = new maplibregl.Marker({ color: "blue" })
+        .setLngLat(coords)
+        .addTo(map);
+
+      currentMarkers_layerCTU.push(marker);
+      currentPoints_layerCTU.push(coords);
+
+      if (currentPoints_layerCTU.length === 2) {
+        getRoute(currentPoints_layerCTU[0], currentPoints_layerCTU[1], map);
+      }
+    });
 
     setMapInstance(map);
 
     return () => {
-      map.off("click", handleMapClick);
-      currentMarkers.forEach((m) => m.remove());
+      currentMarkers_layerCTU.forEach((m) => m.remove());
       map.remove();
     };
   }, []);
@@ -158,22 +210,6 @@ export default function Map() {
         },
         maxzoom: 18.5,
       });
-
-      const startPoint = [105.769053, 10.030951] as [number, number];
-      const endPoint = [105.772, 10.035] as [number, number];
-
-      mapInstance.addLayer({
-        id: "route_layer",
-        type: "line",
-        source: "route",
-        paint: {
-          "line-color": "blue",
-          "line-width": 5,
-          "line-opacity": 0.8,
-        },
-      });
-
-      getRoute(startPoint, endPoint);
     });
   }, [dataCanTho, mapInstance]);
 
