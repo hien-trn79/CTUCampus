@@ -19,3 +19,18 @@ body,
   height: 100%;
   width: 100%;
 }
+
+.menuBar {
+  width: 25vw;
+  background-color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.closeSidebar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}

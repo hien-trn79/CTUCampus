@@ -4,10 +4,13 @@ import MapGeolocate from "./MapGeolocate";
 import G_Floor from "../buildings/DI/floors/G_Floor";
 import One_Floor from "../buildings/DI/floors/One_Floor";
 
-import * as turf from "@turf/turf";
+import MenuBar from "../Menu/MenuBar";
+
 import { center } from "@turf/center";
 
 export default function Map() {
+  const [showMenuBar, setShowMenuBar] = useState(false);
+  const showMenuBarRef = useRef(showMenuBar);
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
 
@@ -141,6 +144,11 @@ export default function Map() {
       markerElement.addEventListener("mouseleave", () => {
         hoverPopup.remove();
       });
+
+      markerElement.addEventListener("click", (e) => {
+        e.stopPropagation(); // Ngăn sự kiện click lan ra map
+        setShowMenuBar(true);
+      });
     });
 
     // Click vào vị trí bất kỳ ngoài tòa nhà
@@ -171,15 +179,26 @@ export default function Map() {
       if (currentPoints_layerCTU.length === 2) {
         getRoute(currentPoints_layerCTU[0], currentPoints_layerCTU[1], map);
       }
+
+      // dong menu bar
+      setShowMenuBar(false);
+      showMenuBarRef.current = false;
+    });
+
+    map.flyTo({
+      center: [105.769053, 10.030951],
+      padding: { left: 400 },
+      zoom: 17,
     });
 
     setMapInstance(map);
 
     return () => {
+      setShowMenuBar(false);
       currentMarkers_layerCTU.forEach((m) => m.remove());
       map.remove();
     };
-  }, []);
+  }, [setShowMenuBar]);
 
   useEffect(() => {
     if (!dataCanTho || !mapInstance) return;
@@ -214,14 +233,19 @@ export default function Map() {
   }, [dataCanTho, mapInstance]);
 
   return (
-    <div
-      id="map"
-      ref={mapContainer}
-      style={{ width: "100vw", height: "100vh" }}
-    >
-      <MapGeolocate mapInstance={mapInstance} />
-      <G_Floor mapInstance={mapInstance} />
-      <One_Floor mapInstance={mapInstance} />
+    <div className="">
+      <div
+        id="map"
+        ref={mapContainer}
+        style={{ width: "100%", height: "100vh" }}
+      >
+        <MapGeolocate mapInstance={mapInstance} />
+        <G_Floor mapInstance={mapInstance} />
+        <One_Floor mapInstance={mapInstance} />
+      </div>
+      <div className="menuBar-container">
+        <MenuBar show={showMenuBar} onClose={() => setShowMenuBar(false)} />
+      </div>
     </div>
   );
 }
