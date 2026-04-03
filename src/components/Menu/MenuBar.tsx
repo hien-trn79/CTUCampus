@@ -1,11 +1,65 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Seacrh from "./Search";
 
 interface MenuBarProps {
   show: boolean;
   onClose: () => void;
+  building: {
+    id: number;
+    properties: {
+      id: number;
+      building: string;
+      name: string;
+      "name:vi": string;
+      "@id": string;
+    };
+    source: string;
+    geometry: {
+      type: string;
+      coordinates: number[] | number[][] | number[][][];
+    };
+  };
 }
 
-export default function MenuBar({ show, onClose }: MenuBarProps) {
+type buildingFetch = {
+  id: number;
+  name: string;
+  src_bg: string;
+  building: string;
+  way_area: number;
+};
+
+export default function MenuBar({ show, onClose, building }: MenuBarProps) {
+  const props = building?.properties;
+  const [buildingClicked, setBuildingClicked] = useState<null | buildingFetch>(
+    null,
+  );
+  useEffect(() => {
+    const fetchData = async () => {
+      if (props) {
+        const typeBuildingID = props.id.toString().split("/").slice(-2, -1)[0];
+        let buildingID = Number(props.id.toString().split("/").pop());
+        if (typeBuildingID === "relation") buildingID = buildingID * -1;
+
+        async function fetchBuildingByID(id: number | string) {
+          const response = await fetch(
+            `http://localhost:3000/api/ctuII/building/${id}`,
+          );
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          return data;
+        }
+
+        const buildingData = await fetchBuildingByID(buildingID);
+        console.log("Fetched building data:", buildingData);
+        setBuildingClicked(buildingData);
+      }
+    };
+
+    fetchData();
+  }, [props]);
   return (
     <>
       <div
@@ -16,28 +70,33 @@ export default function MenuBar({ show, onClose }: MenuBarProps) {
           zIndex: 1000,
         }}
       >
-        <div
-          className="closeSidebar cursor-pointer p-4 right-0 absolute"
-          onClick={onClose}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinelinejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </div>
+        <Seacrh name={props?.name || "Tìm kiếm"} onClose={onClose} />
         {/* Menu content goes here */}
-        <div className="p-8">
-          <h2 className="text-xl font-bold">Menu</h2>
+        <div className="menuBar-content">
+          <div className="menubar-body">
+            <img
+              src={
+                buildingClicked?.src_bg ||
+                "https://res.cloudinary.com/dw7aqqwti/image/upload/v1774972815/CongDaiHocCanTho_honmoc.jpg"
+              }
+              alt=""
+              className="building_bg--primary"
+            />
+            <div className="menubar-content_infor p-2">
+              <h3 className="building_name text-2xl font-bold py-5 ">
+                {props?.name}{" "}
+              </h3>
+
+              <ul className="buildind_list">
+                <li className="building_list--item">
+                  Diện tích: {buildingClicked?.way_area || "N/A"} m²
+                </li>
+                <li className="building_list--item">
+                  Building: {buildingClicked?.building || "N/A"}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </>

@@ -7,7 +7,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "relation/1321726",
+        "id": "relation/1321726",
         "building": "university",
         "name": "Nhà học C2",
         "type": "multipolygon"
@@ -106,7 +106,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "relation/1640189",
+        "id": "relation/1640189",
         "building": "university",
         "name": "Trường Kinh tế",
         "name:en": "School of Economics",
@@ -195,7 +195,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "relation/6728585",
+        "id": "relation/6728585",
         "building": "university",
         "name": "Trường Nông nghiệp",
         "type": "multipolygon"
@@ -494,7 +494,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626388",
+        "id": "way/89626388",
         "building": "yes",
         "name": "Kho"
       },
@@ -530,7 +530,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626393",
+        "id": "way/89626393",
         "amenity": "library",
         "building": "yes",
         "name": "Thư viện trường Bách khoa"
@@ -707,7 +707,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626398",
+        "id": "way/89626398",
         "building": "yes",
         "name": "Bộ Môn Sinh Học"
       },
@@ -799,7 +799,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626416",
+        "id": "way/89626416",
         "building": "yes"
       },
       "geometry": {
@@ -838,7 +838,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626447",
+        "id": "way/89626447",
         "building": "yes"
       },
       "geometry": {
@@ -873,7 +873,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626451",
+        "id": "way/89626451",
         "building": "university"
       },
       "geometry": {
@@ -924,7 +924,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89626507",
+        "id": "way/89626507",
         "building": "yes",
         "name": "Bộ Môn Lý"
       },
@@ -972,7 +972,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89748452",
+        "id": "way/89748452",
         "building": "university",
         "name": "Nhà học B1"
       },
@@ -1056,7 +1056,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89748485",
+        "id": "way/89748485",
         "building": "yes",
         "name": "Nhà học KH"
       },
@@ -1096,7 +1096,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89748489",
+        "id": "way/89748489",
         "building": "yes",
         "name": "Khu phòng làm việc"
       },
@@ -1140,7 +1140,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89748493",
+        "id": "way/89748493",
         "building": "yes"
       },
       "geometry": {
@@ -1215,7 +1215,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89748498",
+        "id": "way/89748498",
         "building": "university"
       },
       "geometry": {
@@ -1266,7 +1266,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89748549",
+        "id": "way/89748549",
         "building": "yes"
       },
       "geometry": {
@@ -1301,7 +1301,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864420",
+        "id": "way/89864420",
         "building": "dormitory",
         "name": "C1"
       },
@@ -1337,7 +1337,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864421",
+        "id": "way/89864421",
         "building": "dormitory",
         "name": "C8"
       },
@@ -1373,7 +1373,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864422",
+        "id": "way/89864422",
         "building": "university",
         "name": "Khoa Khoa học Chính trị"
       },
@@ -1445,7 +1445,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864426",
+        "id": "way/89864426",
         "building": "dormitory",
         "name": "C4"
       },
@@ -1481,7 +1481,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864429",
+        "id": "way/89864429",
         "building": "dormitory",
         "name": "C6"
       },
@@ -1517,7 +1517,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864433",
+        "id": "way/89864433",
         "building": "dormitory",
         "name": "C2"
       },
@@ -1553,7 +1553,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864434",
+        "id": "way/89864434",
         "building": "yes",
         "name": "Văn phòng phục vụ Sinh viên KTX A"
       },
@@ -1593,7 +1593,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864441",
+        "id": "way/89864441",
         "building": "dormitory",
         "name": "C7"
       },
@@ -1629,7 +1629,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864445",
+        "id": "way/89864445",
         "building": "dormitory",
         "name": "C3"
       },
@@ -1665,7 +1665,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/89864447",
+        "id": "way/89864447",
         "building": "dormitory",
         "name": "C5"
       },
@@ -1701,7 +1701,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276168",
+        "id": "way/119276168",
         "building": "university",
         "name": "Trung tâm Ngoại ngữ"
       },
@@ -1773,7 +1773,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276172",
+        "id": "way/119276172",
         "building": "yes"
       },
       "geometry": {
@@ -1824,7 +1824,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276175",
+        "id": "way/119276175",
         "building": "university",
         "name": "Khoa Luật"
       },
@@ -1860,7 +1860,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276180",
+        "id": "way/119276180",
         "building": "university",
         "name": "Trường Công nghệ Thông tin & Truyền thông",
         "name:vi": "Trường Công nghệ Thông tin & Truyền thông"
@@ -1961,7 +1961,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276184",
+        "id": "way/119276184",
         "amenity": "school",
         "building": "yes",
         "name": "Viện nghiên cứu phát triển CNSH"
@@ -1998,7 +1998,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276187",
+        "id": "way/119276187",
         "building": "university",
         "name": "Trung tâm Học liệu"
       },
@@ -2066,7 +2066,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276342",
+        "id": "way/119276342",
         "building": "yes",
         "name": "C12"
       },
@@ -2102,7 +2102,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276345",
+        "id": "way/119276345",
         "building": "dormitory",
         "name": "B13"
       },
@@ -2138,7 +2138,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276348",
+        "id": "way/119276348",
         "building": "dormitory",
         "name": "B22"
       },
@@ -2174,7 +2174,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276350",
+        "id": "way/119276350",
         "building": "dormitory",
         "name": "B8"
       },
@@ -2210,7 +2210,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276351",
+        "id": "way/119276351",
         "building": "dormitory",
         "name": "B11"
       },
@@ -2246,7 +2246,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276352",
+        "id": "way/119276352",
         "building": "yes",
         "name": "C9"
       },
@@ -2282,7 +2282,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276355",
+        "id": "way/119276355",
         "building": "dormitory",
         "name": "B12"
       },
@@ -2318,7 +2318,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276356",
+        "id": "way/119276356",
         "building": "dormitory",
         "name": "B14"
       },
@@ -2354,7 +2354,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276361",
+        "id": "way/119276361",
         "building": "dormitory",
         "name": "B9"
       },
@@ -2390,7 +2390,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276364",
+        "id": "way/119276364",
         "building": "dormitory",
         "name": "C10"
       },
@@ -2426,7 +2426,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/119276366",
+        "id": "way/119276366",
         "building": "yes",
         "name": "C11"
       },
@@ -2462,7 +2462,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166087808",
+        "id": "way/166087808",
         "building": "university",
         "name": "Khoa Sư phạm"
       },
@@ -2522,7 +2522,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166087821",
+        "id": "way/166087821",
         "building": "university"
       },
       "geometry": {
@@ -2557,7 +2557,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166105667",
+        "id": "way/166105667",
         "building": "dormitory",
         "building:levels": "5",
         "name": "KTX Cà Mau"
@@ -2598,7 +2598,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166553783",
+        "id": "way/166553783",
         "building": "dormitory",
         "name": "B2"
       },
@@ -2634,7 +2634,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166553786",
+        "id": "way/166553786",
         "building": "university",
         "name": "C1"
       },
@@ -2742,7 +2742,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166553801",
+        "id": "way/166553801",
         "amenity": "parking",
         "building": "yes",
         "name": "Nhà xe"
@@ -2779,7 +2779,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166553803",
+        "id": "way/166553803",
         "building": "dormitory",
         "building:levels": "5",
         "name": "KTX Hậu Giang"
@@ -2816,7 +2816,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166553809",
+        "id": "way/166553809",
         "building": "dormitory",
         "name": "B23"
       },
@@ -2852,7 +2852,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166553811",
+        "id": "way/166553811",
         "amenity": "public_building",
         "building": "yes",
         "name": "Nhà xe số 2"
@@ -2889,7 +2889,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166563834",
+        "id": "way/166563834",
         "building": "university"
       },
       "geometry": {
@@ -2924,7 +2924,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/166563838",
+        "id": "way/166563838",
         "building": "university",
         "name": "Văn phòng Đoàn - Hội"
       },
@@ -2992,7 +2992,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/167966733",
+        "id": "way/167966733",
         "building": "dormitory",
         "name": "B1"
       },
@@ -3028,7 +3028,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/167966740",
+        "id": "way/167966740",
         "building": "university",
         "name": "Viện nghiên cứu Phát triển Đồng bằng Sông Cửu Long",
         "name:en": "MDI"
@@ -3065,7 +3065,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/170402449",
+        "id": "way/170402449",
         "building": "dormitory",
         "name": "B15"
       },
@@ -3101,7 +3101,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/223368842",
+        "id": "way/223368842",
         "building": "dormitory",
         "name": "B19"
       },
@@ -3137,7 +3137,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/223368845",
+        "id": "way/223368845",
         "building": "dormitory",
         "name": "B21"
       },
@@ -3173,7 +3173,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/454157782",
+        "id": "way/454157782",
         "building": "yes"
       },
       "geometry": {
@@ -3208,7 +3208,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/454157783",
+        "id": "way/454157783",
         "building": "yes"
       },
       "geometry": {
@@ -3243,7 +3243,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/454157785",
+        "id": "way/454157785",
         "building": "yes"
       },
       "geometry": {
@@ -3278,7 +3278,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455026713",
+        "id": "way/455026713",
         "access": "yes",
         "amenity": "motorcycle_parking",
         "building": "roof",
@@ -3333,7 +3333,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455026714",
+        "id": "way/455026714",
         "amenity": "college",
         "building": "yes",
         "name": "NHÀ HỌC KHOA MT"
@@ -3394,7 +3394,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455028435",
+        "id": "way/455028435",
         "amenity": "school",
         "building": "yes",
         "name": "TT Nghien cuu va dao tao nghe nong thon"
@@ -3451,7 +3451,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455028436",
+        "id": "way/455028436",
         "building": "yes"
       },
       "geometry": {
@@ -3486,7 +3486,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455028437",
+        "id": "way/455028437",
         "building": "yes",
         "name": "Cửa hàng G7 Mart",
         "shop": "supermarket"
@@ -3523,7 +3523,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455032881",
+        "id": "way/455032881",
         "building": "university",
         "name": "Phòng Thí nghiệm Chọn giống và Ứng dụng Công nghệ sinh học"
       },
@@ -3559,7 +3559,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455034518",
+        "id": "way/455034518",
         "building": "university",
         "name": "Nhà điều hành"
       },
@@ -3651,7 +3651,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035294",
+        "id": "way/455035294",
         "building": "dormitory",
         "name": "B4"
       },
@@ -3687,7 +3687,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035295",
+        "id": "way/455035295",
         "building": "dormitory",
         "name": "B1"
       },
@@ -3723,7 +3723,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035296",
+        "id": "way/455035296",
         "building": "dormitory",
         "name": "B2"
       },
@@ -3759,7 +3759,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035297",
+        "id": "way/455035297",
         "building": "dormitory",
         "name": "B3"
       },
@@ -3795,7 +3795,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035298",
+        "id": "way/455035298",
         "building": "dormitory",
         "name": "B8"
       },
@@ -3831,7 +3831,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035299",
+        "id": "way/455035299",
         "building": "dormitory",
         "name": "B7"
       },
@@ -3867,7 +3867,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035300",
+        "id": "way/455035300",
         "building": "dormitory",
         "name": "B5"
       },
@@ -3903,7 +3903,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455035301",
+        "id": "way/455035301",
         "building": "dormitory",
         "name": "B6"
       },
@@ -3939,7 +3939,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455038927",
+        "id": "way/455038927",
         "building": "yes",
         "name": "research institute"
       },
@@ -3979,7 +3979,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455038928",
+        "id": "way/455038928",
         "building": "yes"
       },
       "geometry": {
@@ -4014,7 +4014,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455039533",
+        "id": "way/455039533",
         "building": "yes",
         "building:levels": "1",
         "height": "3",
@@ -4052,7 +4052,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455039534",
+        "id": "way/455039534",
         "building": "yes",
         "building:levels": "1",
         "height": "3",
@@ -4090,7 +4090,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455039535",
+        "id": "way/455039535",
         "building": "yes",
         "building:levels": "1",
         "height": "3",
@@ -4128,7 +4128,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455039536",
+        "id": "way/455039536",
         "addr:housename": "nha 123",
         "building": "yes",
         "building:levels": "1",
@@ -4169,7 +4169,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455039541",
+        "id": "way/455039541",
         "building": "yes",
         "building:levels": "1",
         "height": "5"
@@ -4210,7 +4210,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455041301",
+        "id": "way/455041301",
         "building": "yes"
       },
       "geometry": {
@@ -4245,7 +4245,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455041303",
+        "id": "way/455041303",
         "building": "yes"
       },
       "geometry": {
@@ -4280,7 +4280,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042910",
+        "id": "way/455042910",
         "building": "yes",
         "name": "Trạm biến áp",
         "power": "converter"
@@ -4317,7 +4317,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042915",
+        "id": "way/455042915",
         "building": "yes",
         "name": "Phòng thí nghiệm"
       },
@@ -4353,7 +4353,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042916",
+        "id": "way/455042916",
         "building": "yes",
         "name": "Phòng thí nghiệm"
       },
@@ -4389,7 +4389,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042918",
+        "id": "way/455042918",
         "building": "yes",
         "name": "Trạm biến áp",
         "power": "converter"
@@ -4426,7 +4426,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042922",
+        "id": "way/455042922",
         "building": "yes",
         "name": "Căn tin",
         "shop": "coffee"
@@ -4463,7 +4463,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042923",
+        "id": "way/455042923",
         "building": "yes",
         "name": "Chốt bảo vệ",
         "security": "checkpoint"
@@ -4500,7 +4500,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455042924",
+        "id": "way/455042924",
         "building": "yes",
         "name": "Chốt bảo vệ",
         "security": "checkpoint"
@@ -4537,7 +4537,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455050611",
+        "id": "way/455050611",
         "building": "greenhouse",
         "name": "Nha luoi Khoa NN"
       },
@@ -4573,7 +4573,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455050617",
+        "id": "way/455050617",
         "building": "greenhouse",
         "orchard": "trees"
       },
@@ -4609,7 +4609,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455241732",
+        "id": "way/455241732",
         "building": "yes"
       },
       "geometry": {
@@ -4644,7 +4644,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455242404",
+        "id": "way/455242404",
         "building": "school"
       },
       "geometry": {
@@ -4695,7 +4695,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/455242406",
+        "id": "way/455242406",
         "building": "university",
         "name": "Khoa Dự bị Dân tộc"
       },
@@ -4747,7 +4747,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/457035468",
+        "id": "way/457035468",
         "building": "yes"
       },
       "geometry": {
@@ -4782,7 +4782,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/457035470",
+        "id": "way/457035470",
         "building": "university"
       },
       "geometry": {
@@ -4817,7 +4817,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/457035471",
+        "id": "way/457035471",
         "building": "yes"
       },
       "geometry": {
@@ -4852,7 +4852,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/457035472",
+        "id": "way/457035472",
         "building": "yes"
       },
       "geometry": {
@@ -4887,7 +4887,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/457047982",
+        "id": "way/457047982",
         "building": "yes"
       },
       "geometry": {
@@ -4922,7 +4922,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/460482136",
+        "id": "way/460482136",
         "amenity": "restaurant",
         "building": "yes",
         "name": "Căn tin môi trường"
@@ -4963,7 +4963,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/496640322",
+        "id": "way/496640322",
         "building": "yes"
       },
       "geometry": {
@@ -4998,7 +4998,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/537567374",
+        "id": "way/537567374",
         "addr:housename": "nha 123",
         "building": "greenhouse",
         "orchard": "trees"
@@ -5035,7 +5035,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/537567652",
+        "id": "way/537567652",
         "building": "university",
         "name": "Hội trường Rùa"
       },
@@ -5103,7 +5103,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/538755916",
+        "id": "way/538755916",
         "amenity": "restaurant",
         "building": "yes",
         "name": "Căng tin khoa Công nghệ"
@@ -5140,7 +5140,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/541657764",
+        "id": "way/541657764",
         "building": "yes"
       },
       "geometry": {
@@ -5175,7 +5175,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543237351",
+        "id": "way/543237351",
         "amenity": "parking_entrance",
         "building": "yes",
         "name": "CÔNG VIÊN BIOGAS"
@@ -5212,7 +5212,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543237353",
+        "id": "way/543237353",
         "building": "university",
         "name": "Khoa Môi trường và Tài nguyên Thiên nhiên"
       },
@@ -5320,7 +5320,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543237691",
+        "id": "way/543237691",
         "building": "yes",
         "leisure": "sports_hall",
         "name": "Nhà thi đấu đa năng"
@@ -5357,7 +5357,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543237692",
+        "id": "way/543237692",
         "amenity": "bicycle_parking",
         "name": "bãi xe Khoa nông nghiệp và SHƯD"
       },
@@ -5393,7 +5393,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543240050",
+        "id": "way/543240050",
         "building": "greenhouse",
         "name": "Nhà lưới thí nghiệm"
       },
@@ -5429,7 +5429,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247968",
+        "id": "way/543247968",
         "building": "yes"
       },
       "geometry": {
@@ -5464,7 +5464,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247969",
+        "id": "way/543247969",
         "building": "yes"
       },
       "geometry": {
@@ -5499,7 +5499,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247970",
+        "id": "way/543247970",
         "building": "yes"
       },
       "geometry": {
@@ -5534,7 +5534,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247971",
+        "id": "way/543247971",
         "building": "yes"
       },
       "geometry": {
@@ -5569,7 +5569,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247972",
+        "id": "way/543247972",
         "building": "yes"
       },
       "geometry": {
@@ -5604,7 +5604,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247973",
+        "id": "way/543247973",
         "building": "yes"
       },
       "geometry": {
@@ -5639,7 +5639,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247974",
+        "id": "way/543247974",
         "building": "yes"
       },
       "geometry": {
@@ -5674,7 +5674,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543247991",
+        "id": "way/543247991",
         "building": "yes"
       },
       "geometry": {
@@ -5709,7 +5709,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543248005",
+        "id": "way/543248005",
         "building": "yes"
       },
       "geometry": {
@@ -5744,7 +5744,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543248009",
+        "id": "way/543248009",
         "building": "yes"
       },
       "geometry": {
@@ -5795,7 +5795,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543248012",
+        "id": "way/543248012",
         "building": "yes"
       },
       "geometry": {
@@ -5830,7 +5830,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/543840817",
+        "id": "way/543840817",
         "building": "yes"
       },
       "geometry": {
@@ -5865,7 +5865,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/669125200",
+        "id": "way/669125200",
         "building": "yes"
       },
       "geometry": {
@@ -5900,7 +5900,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/669125201",
+        "id": "way/669125201",
         "building": "yes"
       },
       "geometry": {
@@ -5935,7 +5935,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/669125202",
+        "id": "way/669125202",
         "building": "yes"
       },
       "geometry": {
@@ -5970,7 +5970,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/669125203",
+        "id": "way/669125203",
         "building": "yes"
       },
       "geometry": {
@@ -6029,7 +6029,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/669125204",
+        "id": "way/669125204",
         "building": "yes"
       },
       "geometry": {
@@ -6084,7 +6084,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/829116654",
+        "id": "way/829116654",
         "addr:city": "Cần Thơ",
         "addr:district": "Ninh Kiều",
         "addr:housenumber": "Cổng C, Khu 2",
@@ -6132,7 +6132,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/875075032",
+        "id": "way/875075032",
         "building": "yes"
       },
       "geometry": {
@@ -6175,7 +6175,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/875075033",
+        "id": "way/875075033",
         "building": "yes"
       },
       "geometry": {
@@ -6210,7 +6210,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/875075034",
+        "id": "way/875075034",
         "building": "yes"
       },
       "geometry": {
@@ -6245,7 +6245,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/875075086",
+        "id": "way/875075086",
         "building": "yes"
       },
       "geometry": {
@@ -6280,7 +6280,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914631723",
+        "id": "way/914631723",
         "building": "yes"
       },
       "geometry": {
@@ -6315,7 +6315,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684866",
+        "id": "way/914684866",
         "building": "yes"
       },
       "geometry": {
@@ -6354,7 +6354,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684867",
+        "id": "way/914684867",
         "building": "yes"
       },
       "geometry": {
@@ -6397,7 +6397,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684868",
+        "id": "way/914684868",
         "building": "yes"
       },
       "geometry": {
@@ -6440,7 +6440,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684869",
+        "id": "way/914684869",
         "building": "yes"
       },
       "geometry": {
@@ -6483,7 +6483,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684870",
+        "id": "way/914684870",
         "building": "yes"
       },
       "geometry": {
@@ -6526,7 +6526,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684871",
+        "id": "way/914684871",
         "building": "yes"
       },
       "geometry": {
@@ -6565,7 +6565,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684872",
+        "id": "way/914684872",
         "building": "yes"
       },
       "geometry": {
@@ -6608,7 +6608,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684873",
+        "id": "way/914684873",
         "building": "yes"
       },
       "geometry": {
@@ -6647,7 +6647,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684874",
+        "id": "way/914684874",
         "building": "yes"
       },
       "geometry": {
@@ -6682,7 +6682,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684875",
+        "id": "way/914684875",
         "building": "yes"
       },
       "geometry": {
@@ -6725,7 +6725,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684876",
+        "id": "way/914684876",
         "building": "yes"
       },
       "geometry": {
@@ -6764,7 +6764,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914684882",
+        "id": "way/914684882",
         "building": "yes",
         "name": "Phòng bảo vệ"
       },
@@ -6800,7 +6800,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747285",
+        "id": "way/914747285",
         "building": "yes"
       },
       "geometry": {
@@ -6835,7 +6835,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747286",
+        "id": "way/914747286",
         "building": "yes"
       },
       "geometry": {
@@ -6870,7 +6870,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747287",
+        "id": "way/914747287",
         "building": "yes"
       },
       "geometry": {
@@ -6905,7 +6905,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747288",
+        "id": "way/914747288",
         "building": "yes"
       },
       "geometry": {
@@ -6940,7 +6940,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747289",
+        "id": "way/914747289",
         "building": "yes"
       },
       "geometry": {
@@ -6975,7 +6975,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747290",
+        "id": "way/914747290",
         "building": "yes"
       },
       "geometry": {
@@ -7010,7 +7010,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747291",
+        "id": "way/914747291",
         "building": "yes"
       },
       "geometry": {
@@ -7045,7 +7045,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747293",
+        "id": "way/914747293",
         "building": "yes"
       },
       "geometry": {
@@ -7080,7 +7080,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747294",
+        "id": "way/914747294",
         "building": "yes"
       },
       "geometry": {
@@ -7115,7 +7115,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747295",
+        "id": "way/914747295",
         "building": "yes"
       },
       "geometry": {
@@ -7150,7 +7150,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747296",
+        "id": "way/914747296",
         "building": "yes"
       },
       "geometry": {
@@ -7185,7 +7185,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747297",
+        "id": "way/914747297",
         "building": "yes"
       },
       "geometry": {
@@ -7220,7 +7220,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747298",
+        "id": "way/914747298",
         "building": "yes"
       },
       "geometry": {
@@ -7255,7 +7255,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747299",
+        "id": "way/914747299",
         "building": "yes"
       },
       "geometry": {
@@ -7302,7 +7302,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914747308",
+        "id": "way/914747308",
         "building": "roof",
         "information": "board",
         "tourism": "information"
@@ -7339,7 +7339,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914959277",
+        "id": "way/914959277",
         "building": "roof",
         "information": "map",
         "tourism": "information"
@@ -7376,7 +7376,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914959278",
+        "id": "way/914959278",
         "building": "yes"
       },
       "geometry": {
@@ -7415,7 +7415,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/914959279",
+        "id": "way/914959279",
         "building": "yes"
       },
       "geometry": {
@@ -7450,7 +7450,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/968947253",
+        "id": "way/968947253",
         "building": "university"
       },
       "geometry": {
@@ -7485,7 +7485,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/968947258",
+        "id": "way/968947258",
         "building": "school"
       },
       "geometry": {
@@ -7520,7 +7520,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/968947262",
+        "id": "way/968947262",
         "building": "university",
         "name": "Khoa Khoa học xã hội và Nhân văn"
       },
@@ -7588,7 +7588,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/968948635",
+        "id": "way/968948635",
         "building": "university"
       },
       "geometry": {
@@ -7655,7 +7655,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/968948636",
+        "id": "way/968948636",
         "building": "university"
       },
       "geometry": {
@@ -7722,7 +7722,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/968948637",
+        "id": "way/968948637",
         "building": "university"
       },
       "geometry": {
@@ -7789,7 +7789,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/969442782",
+        "id": "way/969442782",
         "building": "university",
         "name": "Trường Thuỷ sản"
       },
@@ -7841,7 +7841,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/969442783",
+        "id": "way/969442783",
         "building": "greenhouse"
       },
       "geometry": {
@@ -7876,7 +7876,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/969442787",
+        "id": "way/969442787",
         "building": "university",
         "name": "Tòa nhà Công nghệ cao",
         "operator": "Đại học Cần Thơ"
@@ -7957,7 +7957,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1216687211",
+        "id": "way/1216687211",
         "amenity": "fast_food",
         "building": "yes",
         "fast_food": "cafeteria",
@@ -7999,7 +7999,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1225401893",
+        "id": "way/1225401893",
         "building": "dormitory",
         "name": "B20"
       },
@@ -8035,7 +8035,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1225401894",
+        "id": "way/1225401894",
         "building": "yes"
       },
       "geometry": {
@@ -8130,7 +8130,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1452893271",
+        "id": "way/1452893271",
         "building": "university"
       },
       "geometry": {
@@ -8237,7 +8237,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1452893272",
+        "id": "way/1452893272",
         "building": "university"
       },
       "geometry": {
@@ -8288,7 +8288,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1453014279",
+        "id": "way/1453014279",
         "building": "university",
         "name": "Nhà học D1"
       },
@@ -8340,7 +8340,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "way/1453014280",
+        "id": "way/1453014280",
         "building": "university",
         "name": "Nhà học D2"
       },
@@ -8436,7 +8436,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119057",
+        "id": "node/1780119057",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8451,7 +8451,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119060",
+        "id": "node/1780119060",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8466,7 +8466,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119061",
+        "id": "node/1780119061",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8481,7 +8481,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119062",
+        "id": "node/1780119062",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8496,7 +8496,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119071",
+        "id": "node/1780119071",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8511,7 +8511,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119079",
+        "id": "node/1780119079",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8526,7 +8526,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119113",
+        "id": "node/1780119113",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8541,7 +8541,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1780119115",
+        "id": "node/1780119115",
         "amenity": "bicycle_parking"
       },
       "geometry": {
@@ -8556,7 +8556,7 @@
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/2322680895",
+        "id": "node/2322680895",
         "amenity": "bicycle_parking",
         "check_date": "2023-10-24",
         "covered": "no",

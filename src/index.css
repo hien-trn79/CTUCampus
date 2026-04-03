@@ -20,6 +20,7 @@ body,
   width: 100%;
 }
 
+/* ------------------MenuBar -------------------- */
 .menuBar {
   width: 25vw;
   background-color: white;
@@ -28,9 +29,72 @@ body,
   border-bottom-right-radius: 8px;
 }
 
+/* ------------------Search MenuBar -------------------- */
+
 .closeSidebar {
   position: absolute;
-  top: 10px;
-  right: 10px;
   cursor: pointer;
+  transform: translateX(-50%, 50%);
+  top: 29%;
+  right: 2%;
+}
+
+.custom_search {
+  position: absolute;
+  height: 60px;
+  padding: 5px;
+  text-align: center;
+  z-index: 1000;
+  width: 100%;
+  text-align: center;
+}
+
+.search--input {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 5px 2px 4px 2px rgba(23, 59, 239, 0.1);
+}
+
+.search--input:focus {
+  outline: none;
+}
+
+.building_bg--img {
+  width: 100%;
+  height: 48;
+  object-fit: cover;
+}
+
+/* -------------G floor ------------- */
+.layer-control {
+  min-height: 110px;
+}
+
+.layer-control_header {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.layer-control_item--label {
+  font-size: 14px;
+  padding-top: 6px;
+}
+
+.button_find_route:hover {
+  cursor: pointer;
+  transform: scale(1.02);
+}
+
+.button_find_route:active {
+  transform: scale(0.98);
+}
+
+.button_find_route.active {
+  background-color: #af281e;
+  color: white;
 }

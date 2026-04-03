@@ -16,6 +16,9 @@ export default function Map() {
 
   const [dataCanTho, setDataCanTho] = useState(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [buildingClicked, setBuildingClicked] = useState<any>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -109,8 +112,8 @@ export default function Map() {
     const currentPoints_layerCTU: [number, number][] = [];
 
     map.on("click", "khu_ii_dhct_layer", (e) => {
-      const props = e.features?.[0].properties;
       const features = e.features?.[0];
+      const props = features?.properties;
       if (!props || !features) return;
       const centerPoint = center(features);
 
@@ -147,6 +150,7 @@ export default function Map() {
 
       markerElement.addEventListener("click", (e) => {
         e.stopPropagation(); // Ngăn sự kiện click lan ra map
+        setBuildingClicked(features || null);
         setShowMenuBar(true);
       });
     });
@@ -198,7 +202,7 @@ export default function Map() {
       currentMarkers_layerCTU.forEach((m) => m.remove());
       map.remove();
     };
-  }, [setShowMenuBar]);
+  }, [setShowMenuBar, setBuildingClicked]);
 
   useEffect(() => {
     if (!dataCanTho || !mapInstance) return;
@@ -239,12 +243,17 @@ export default function Map() {
         ref={mapContainer}
         style={{ width: "100%", height: "100vh" }}
       >
+        <button id="toggle-button">Hide</button>
         <MapGeolocate mapInstance={mapInstance} />
         <G_Floor mapInstance={mapInstance} />
         <One_Floor mapInstance={mapInstance} />
       </div>
       <div className="menuBar-container">
-        <MenuBar show={showMenuBar} onClose={() => setShowMenuBar(false)} />
+        <MenuBar
+          show={showMenuBar}
+          onClose={() => setShowMenuBar(false)}
+          building={buildingClicked}
+        />
       </div>
     </div>
   );
