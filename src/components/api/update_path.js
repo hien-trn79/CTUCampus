@@ -59,14 +59,28 @@ app.post("/api/update_path", async (req, res) => {
     }
 
     // BƯỚC 3: Kiểm tra View
-    let refreshQuery =
-      level === 0
-        ? `SELECT * FROM mv_short_path_g_floor`
-        : `SELECT * FROM mv_short_path_one_floor`;
+    let refreshQuery = null;
+    if (level === 0) {
+      console.log("Cập nhật đường đi cho tầng G");
+      refreshQuery = `SELECT ST_AsGeoJSON(ST_Buffer(geom::geography, 0.5)::geometry) as geojson FROM mv_short_path_g_floor`;
+    } else if (level === 1) {
+      console.log("Cập nhật đường đi cho tầng 1");
+      refreshQuery = `SELECT ST_AsGeoJSON(ST_Buffer(geom::geography, 0.5)::geometry) as geojson FROM mv_short_path_one_floor`;
+    }
     try {
       const result = await client.query(refreshQuery);
       await client.query("COMMIT");
-      res.json({ status: "success", data: result.rows });
+
+      const features = result.rows.map((row) => ({
+        type: "Feature",
+        geometry: JSON.parse(row.geojson),
+        properties: {},
+      }));
+
+      res.json({
+        status: "success",
+        data: { type: "FeatureCollection", features },
+      });
     } catch (err) {
       checkDatabaseError(
         err,

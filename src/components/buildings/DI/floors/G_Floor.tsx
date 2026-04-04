@@ -1,12 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import maplibregl from "maplibre-gl";
 
+interface GFloorProps {
+  mapInstance: MapLibreMap | null;
+  setShowNotification: (value: boolean) => void;
+  setNotificationInfo: (info: {
+    type: string;
+    content: string;
+    description: string;
+  }) => void;
+}
+
 export default function G_Floor({
   mapInstance,
-}: {
-  mapInstance: MapLibreMap | null;
-}) {
+  setShowNotification,
+  setNotificationInfo,
+}: GFloorProps) {
   const [data, setData] = useState(null);
 
   const toggleLayer = (layerid: string, isVisible: boolean) => {
@@ -122,33 +133,27 @@ export default function G_Floor({
       });
 
       // layer shortest path
-      mapInstance.addSource("shortest_path_g_floor", {
-        type: "raster",
-        tiles: [
-          "http://localhost:8080/geoserver/workspace_network_analysis/wms?" +
-            "service=WMS&" +
-            "version=1.1.1&" +
-            "request=GetMap&" +
-            "layers=workspace_network_analysis:mv_short_path_g_floor&" +
-            "bbox={bbox-epsg-3857}&" + // Thay tọa độ tĩnh bằng biến động
-            "width=256&" +
-            "height=256&" +
-            "srs=EPSG:3857&" + // Chuyển sang 3857 để khớp với bản đồ web
-            "format=image/png&" +
-            "transparent=true&" + // Quan trọng để thấy đường đi trên nền map
-            "styles=",
-        ],
-        tileSize: 256,
-      });
+      if (!mapInstance.getSource("shortest_path_g_floor")) {
+        mapInstance.addSource("shortest_path_g_floor", {
+          type: "geojson",
+          data: { type: "FeatureCollection", features: [] },
+        });
 
-      mapInstance.addLayer({
-        id: "workspace_network_analysis:mv_short_path_g_floor",
-        type: "raster",
-        source: "shortest_path_g_floor",
-        layout: {
-          visibility: "none",
-        },
-      });
+        mapInstance.addLayer({
+          id: "workspace_network_analysis:mv_short_path_g_floor",
+          type: "fill-extrusion",
+          source: "shortest_path_g_floor",
+          layout: {
+            visibility: "none",
+          },
+          paint: {
+            "fill-extrusion-color": "#3852B4",
+            "fill-extrusion-base": 0.5,
+            "fill-extrusion-height": 0.6,
+            "fill-extrusion-opacity": 0.9,
+          },
+        });
+      }
 
       // handler maker cho layer => edit mode logic
       let isEditing = false;
@@ -156,89 +161,104 @@ export default function G_Floor({
       let endPoint: maplibregl.Marker | null = null;
       let markers: maplibregl.Marker[] = [];
       const editButton = document.querySelector(".button_find_route");
-      editButton?.addEventListener("click", () => {
+
+      const clearMarkers = () => {
+        markers.forEach((marker) => marker.remove());
+        markers = [];
+        startPoint = null;
+        endPoint = null;
+      };
+
+      const onBtnClick = () => {
+        const floorSelect = document.getElementById(
+          "active_floor_select",
+        ) as HTMLSelectElement;
+        const currentFloor = floorSelect ? floorSelect.value : "0";
+
+        // Return if this button click is meant for another floor
+        if (currentFloor !== "0") return;
+
+        // Hide Floor 1 route when working on Floor G
+        if (
+          mapInstance &&
+          mapInstance.getLayer(
+            "workspace_network_analysis:mv_short_path_one_floor",
+          )
+        ) {
+          mapInstance.setLayoutProperty(
+            "workspace_network_analysis:mv_short_path_one_floor",
+            "visibility",
+            "none",
+          );
+        }
+
         if (!isEditing) {
           isEditing = true;
-          startPoint = null;
-          endPoint = null;
-
           clearMarkers();
-
-          editButton.textContent = "Submit Route";
-          editButton.classList.add("active");
-
-          alert("Click on the map to select start and end points for routing.");
+          if (editButton) {
+            editButton.textContent = "Submit Route Tầng G";
+            editButton.classList.add("active");
+          }
+          setShowNotification(true);
+          setNotificationInfo({
+            type: "warning",
+            content: "Chọn điểm bắt đầu và kết thúc",
+            description: "Nhấp vào bản đồ để chọn điểm bắt đầu và kết thúc.",
+          });
         } else {
           if (startPoint && endPoint) {
             fetch("http://localhost:5001/api/update_path", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 start: startPoint.getLngLat(),
                 end: endPoint.getLngLat(),
-                level: 0, // có thể thay đổi theo tầng hiện tại
+                level: 0,
               }),
             })
               .then((response) => response.json())
-              .then((data) => {
-                console.log("Path updated:", data);
-                // chinh sua lai param cho source layer wms
+              .then((resData) => {
+                console.log("Path updated:", resData);
                 if (!mapInstance) return;
 
-                const sourceId = "shortest_path_g_floor";
-                const layerId =
-                  "workspace_network_analysis:mv_short_path_g_floor";
-
-                if (mapInstance.getLayer(layerId)) {
-                  mapInstance.removeLayer(layerId);
+                const source = mapInstance.getSource(
+                  "shortest_path_g_floor",
+                ) as maplibregl.GeoJSONSource;
+                if (source && resData.data) {
+                  source.setData(resData.data);
                 }
-
-                if (mapInstance.getSource(sourceId)) {
-                  mapInstance.removeSource(sourceId);
-                }
-
-                mapInstance.addSource(sourceId, {
-                  type: "raster",
-                  tiles: [
-                    "http://localhost:8080/geoserver/workspace_network_analysis/wms?" +
-                      "service=WMS&" +
-                      "version=1.1.1&" +
-                      "request=GetMap&" +
-                      "layers=workspace_network_analysis:mv_short_path_g_floor&" +
-                      "bbox={bbox-epsg-3857}&" + // Thay tọa độ tĩnh bằng biến động
-                      "width=256&" +
-                      "height=256&" +
-                      "srs=EPSG:3857&" + // Chuyển sang 3857 để khớp với bản đồ web
-                      "format=image/png&" +
-                      "transparent=true&" + // Quan trọng để thấy đường đi trên nền map
-                      "styles=" +
-                      "&_ts=" +
-                      Date.now(), // them vao param timestamp de tranh cache
-                  ],
-                  tileSize: 256,
-                });
-
-                mapInstance.addLayer({
-                  id: layerId,
-                  type: "raster",
-                  source: sourceId,
-                  layout: {
-                    visibility: "visible",
-                  },
-                });
+                mapInstance.setLayoutProperty(
+                  "workspace_network_analysis:mv_short_path_g_floor",
+                  "visibility",
+                  "visible",
+                );
               });
           } else {
-            alert("Please select both start and end points.");
+            setShowNotification(true);
+            setNotificationInfo({
+              type: "warning",
+              content: "Thiếu điểm bắt đầu hoặc kết thúc",
+              description:
+                "Vui lòng chọn cả điểm bắt đầu và kết thúc trước khi submit.",
+            });
           }
-
           isEditing = false;
-          editButton.textContent = "Find Route";
-          editButton.classList.remove("active");
+          if (editButton) {
+            editButton.textContent = "Find Route";
+            editButton.classList.remove("active");
+          }
         }
-      });
-      mapInstance?.on("click", "di_g_floor_layer", (event) => {
+      };
+
+      // Xóa listener cũ (nếu có) để tránh binding 1 nút nhiều lần
+      const oldBtnHandler = (editButton as any)._onClickHandler;
+      if (oldBtnHandler) {
+        editButton?.removeEventListener("click", oldBtnHandler);
+      }
+      (editButton as any)._onClickHandler = onBtnClick;
+      editButton?.addEventListener("click", onBtnClick);
+
+      const onMapClick = (event: any) => {
         if (!isEditing) return;
 
         if (!startPoint) {
@@ -254,24 +274,21 @@ export default function G_Floor({
             .addTo(mapInstance);
           markers.push(endPoint);
         } else {
-          alert(
-            "da san sang start va end point, vui long submit hoac clear truoc khi chon lai",
-          );
+          setShowNotification(true);
+          setNotificationInfo({
+            type: "success",
+            content: "Đã có cả điểm bắt đầu và kết thúc",
+            description: "Vui lòng submit hoặc clear trước khi chọn lại.",
+          });
         }
-      });
-
-      const clearMarkers = () => {
-        markers.forEach((marker) => marker.remove());
-        markers = [];
       };
+
+      mapInstance.on("click", "di_g_floor_layer", onMapClick);
     });
   }, [mapInstance, data]);
 
   return (
     <div className="g_floor">
-      <button className="button_find_route absolute bottom-15 right-5 z-10 bg-blue-500 text-[15px] font-bold text-white p-2.5 rounded-xl hover:bg-blue-700">
-        Find Route
-      </button>
       <div className="layer-control z-10 absolute top-15 right-2 bg-white rounded-2xl shadow flex flex-col gap-2">
         <div className="layer-control_header h-[40px] flex items-center justify-center bg-blue-500 ">
           <h3 className="text-lg font-bold text-white">Layer Control</h3>
