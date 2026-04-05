@@ -22,6 +22,15 @@ export default function One_Floor({
   const [networkData, setNetworkData] = useState<FeatureCollection | null>(
     null,
   );
+  // --------------------- Functions ----------------
+  // Xu ly thao tac zoom den
+  function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
+    return Math.log2(
+      Math.cos((newLatitude / 180) * Math.PI) /
+        Math.cos((oldLatitude / 180) * Math.PI),
+    );
+  }
+
   // Fetch Data
   useEffect(() => {
     if (!mapInstance) return;
@@ -197,6 +206,16 @@ export default function One_Floor({
           isEditing = true;
           clearMakers();
           if (editButton) {
+            let zoomIn = true;
+            const mapZoom = mapInstance.getZoom();
+            console.log("Current zoom:", mapZoom);
+            const delta =
+              (zoomIn ? 1.5 : -1.5) +
+              getZoomAdjustment(mapInstance.getCenter().lat, 10);
+            console.log("Zoom adjustment:", delta);
+
+            const zoom = 18.9;
+            mapInstance.easeTo({ zoom, duration: 1000 });
             editButton.textContent = "Submit Route Tầng 1";
             editButton.classList.add("active");
           }

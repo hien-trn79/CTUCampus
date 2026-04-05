@@ -20,6 +20,15 @@ export default function G_Floor({
 }: GFloorProps) {
   const [data, setData] = useState(null);
 
+  // --------------------- Functions ----------------
+  // Xu ly thao tac zoom den
+  function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
+    return Math.log2(
+      Math.cos((newLatitude / 180) * Math.PI) /
+        Math.cos((oldLatitude / 180) * Math.PI),
+    );
+  }
+
   const toggleLayer = (layerid: string, isVisible: boolean) => {
     if (mapInstance) {
       mapInstance.setLayoutProperty(
@@ -196,6 +205,18 @@ export default function G_Floor({
           isEditing = true;
           clearMarkers();
           if (editButton) {
+            // zoom den khu vuc tang G
+            let zoomIn = true;
+            const mapZoom = mapInstance.getZoom();
+            console.log("Current zoom:", mapZoom);
+            const delta =
+              (zoomIn ? 1.5 : -1.5) +
+              getZoomAdjustment(mapInstance.getCenter().lat, 10);
+            console.log("Zoom adjustment:", delta);
+
+            const zoom = 19.36992042154802;
+            mapInstance.easeTo({ zoom, duration: 1000 });
+
             editButton.textContent = "Submit Route Tầng G";
             editButton.classList.add("active");
           }

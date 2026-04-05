@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import MapGeolocate from "./MapGeolocate";
 import G_Floor from "../buildings/DI/floors/G_Floor";
 import One_Floor from "../buildings/DI/floors/One_Floor";
+import Search from "../Menu/Search";
 
 import Notification from "../notification/Notification";
 
@@ -25,6 +26,14 @@ export default function Map() {
     content: "Notification Title",
     description: "This is the description of the notification.",
   });
+  // --------------------- Functions ----------------
+  // Xu ly thao tac zoom den
+  function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
+    return Math.log2(
+      Math.cos((newLatitude / 180) * Math.PI) /
+        Math.cos((oldLatitude / 180) * Math.PI),
+    );
+  }
 
   // Tự động ẩn notification sau khi animation kết thúc
   document.addEventListener("animationend", (e) => {
@@ -147,6 +156,16 @@ export default function Map() {
         }
 
         if (btn) {
+          let zoomIn = true;
+          const mapZoom = map.getZoom();
+          console.log("Current zoom:", mapZoom);
+          const delta =
+            (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(map.getCenter().lat, 10);
+          console.log("Zoom adjustment:", delta);
+
+          const zoom = 17;
+          map.easeTo({ zoom, duration: 1000 });
+
           btn.textContent = "Submit Route CTU";
           btn.classList.add("bg-red-500", "hover:bg-red-700", "active");
           btn.classList.remove("bg-blue-500", "hover:bg-blue-700");
@@ -437,6 +456,7 @@ export default function Map() {
             Find Route
           </button>
         </div>
+        <Search name={buildingClicked?.name || "Tìm kiếm"} mapInstance={mapInstance} />
         <MapGeolocate mapInstance={mapInstance} />
         <G_Floor
           mapInstance={mapInstance}
