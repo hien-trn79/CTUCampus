@@ -14,34 +14,54 @@ router.get("/search", async (req, res) => {
     await client.query("BEGIN");
 
     if (!startLng || !startLat) {
-      const startNodeRes = await client.query('SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE id = 2');
+      const startNodeRes = await client.query(
+        "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE id = 2",
+      );
       if (startNodeRes.rows.length > 0) {
         startLng = startNodeRes.rows[0].lng;
         startLat = startNodeRes.rows[0].lat;
       }
     }
 
-    const STAIR_NODE_G_FLOORid = 227; 
-    const stairNodeG = await client.query('SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE id = $1', [STAIR_NODE_G_FLOORid]);
-    const STAIR_NODE_ONE_FLOORid = 236; 
-    const stairNode1 = await client.query('SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes WHERE id = $1', [STAIR_NODE_ONE_FLOORid]);
+    const STAIR_NODE_G_FLOORid = 227;
+    const stairNodeG = await client.query(
+      "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE id = $1",
+      [STAIR_NODE_G_FLOORid],
+    );
+    const STAIR_NODE_ONE_FLOORid = 236;
+    const stairNode1 = await client.query(
+      "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes WHERE id = $1",
+      [STAIR_NODE_ONE_FLOORid],
+    );
 
-    const stairLngG = stairNodeG.rows.length > 0 ? stairNodeG.rows[0].lng : null;
-    const stairLatG = stairNodeG.rows.length > 0 ? stairNodeG.rows[0].lat : null;
-    const stairLng1 = stairNode1.rows.length > 0 ? stairNode1.rows[0].lng : null;
-    const stairLat1 = stairNode1.rows.length > 0 ? stairNode1.rows[0].lat : null;
+    const stairLngG =
+      stairNodeG.rows.length > 0 ? stairNodeG.rows[0].lng : null;
+    const stairLatG =
+      stairNodeG.rows.length > 0 ? stairNodeG.rows[0].lat : null;
+    const stairLng1 =
+      stairNode1.rows.length > 0 ? stairNode1.rows[0].lng : null;
+    const stairLat1 =
+      stairNode1.rows.length > 0 ? stairNode1.rows[0].lat : null;
 
     let targetFloor = 1;
-    let endNodeRes = await client.query('SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes WHERE name ILIKE $1 LIMIT 1', ['%' + room + '%']);
-    
+    let endNodeRes = await client.query(
+      "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes WHERE name ILIKE $1 LIMIT 1",
+      ["%" + room + "%"],
+    );
+
     if (endNodeRes.rows.length === 0) {
-      endNodeRes = await client.query('SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE name ILIKE $1 LIMIT 1', ['%' + room + '%']);
+      endNodeRes = await client.query(
+        "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE name ILIKE $1 LIMIT 1",
+        ["%" + room + "%"],
+      );
       targetFloor = 0;
     }
 
     if (endNodeRes.rows.length === 0) {
       await client.query("ROLLBACK");
-      return res.status(404).json({ error: "Không tìm thấy phòng ở cả 2 tầng" });
+      return res
+        .status(404)
+        .json({ error: "Không tìm thấy phòng ở cả 2 tầng" });
     }
 
     const idGoalLng = endNodeRes.rows[0].lng;
@@ -50,8 +70,10 @@ router.get("/search", async (req, res) => {
     await client.query("DELETE FROM points_g_floor");
     await client.query("DELETE FROM points");
 
-    const insertPointGQuery = 'INSERT INTO points_g_floor (geom, level) VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)';
-    const insertPoint1Query = 'INSERT INTO points (geom, level) VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)';
+    const insertPointGQuery =
+      "INSERT INTO points_g_floor (geom, level) VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)";
+    const insertPoint1Query =
+      "INSERT INTO points (geom, level) VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)";
 
     if (targetFloor === 0) {
       await client.query(insertPointGQuery, [startLng, startLat, 0]);
@@ -59,18 +81,27 @@ router.get("/search", async (req, res) => {
     } else if (targetFloor === 1) {
       if (!stairLngG || !stairLng1) {
         await client.query("ROLLBACK");
-        return res.status(400).json({ error: "Chưa cấu hình tọa độ Cầu Thang, vui lòng kiểm tra ID cầu thang trong code search." });
+        return res
+          .status(400)
+          .json({
+            error:
+              "Chưa cấu hình tọa độ Cầu Thang, vui lòng kiểm tra ID cầu thang trong code search.",
+          });
       }
-      
+
       await client.query(insertPointGQuery, [startLng, startLat, 0]);
       await client.query(insertPointGQuery, [stairLngG, stairLatG, 0]);
-      
+
       await client.query(insertPoint1Query, [stairLng1, stairLat1, 1]);
       await client.query(insertPoint1Query, [idGoalLng, idGoalLat, 1]);
     }
 
-    const viewG = await client.query('SELECT ST_AsGeoJSON(ST_Buffer(geom::geography, 0.5)::geometry) as geojson FROM mv_short_path_g_floor');
-    const view1 = await client.query('SELECT ST_AsGeoJSON(ST_Buffer(geom::geography, 0.5)::geometry) as geojson FROM mv_short_path_one_floor');
+    const viewG = await client.query(
+      "SELECT ST_AsGeoJSON(ST_Buffer(geom::geography, 0.5)::geometry) as geojson FROM mv_short_path_g_floor",
+    );
+    const view1 = await client.query(
+      "SELECT ST_AsGeoJSON(ST_Buffer(geom::geography, 0.5)::geometry) as geojson FROM mv_short_path_one_floor",
+    );
 
     await client.query("COMMIT");
 
@@ -79,7 +110,7 @@ router.get("/search", async (req, res) => {
       geometry: JSON.parse(row.geojson),
       properties: { floor: "G" },
     }));
-    
+
     const features1 = view1.rows.map((row) => ({
       type: "Feature",
       geometry: JSON.parse(row.geojson),
@@ -89,9 +120,11 @@ router.get("/search", async (req, res) => {
     res.json({
       status: "success",
       targetFloor: targetFloor,
-      data: { type: "FeatureCollection", features: [...featuresG, ...features1] },
+      data: {
+        type: "FeatureCollection",
+        features: [...featuresG, ...features1],
+      },
     });
-
   } catch (error) {
     if (client) await client.query("ROLLBACK");
     res.status(500).json({ error: "Lỗi", message: error.message });

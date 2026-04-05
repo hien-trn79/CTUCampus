@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import maplibregl from "maplibre-gl";
 
@@ -10,6 +11,12 @@ export default function Search({ name, mapInstance }: SearchProps) {
   const [inputValue, setInputValue] = useState<string>("");
   // Xu ly su kien khi nguoi dung nhap vao o tim kiem
 
+  function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
+    return Math.log2(
+      Math.cos((newLatitude / 180) * Math.PI) /
+        Math.cos((oldLatitude / 180) * Math.PI),
+    );
+  }
   const submitSearch = async () => {
     // Thuc hien cac hanh dong tim kiem o day, su dung inputValue de lay gia tri nguoi dung da nhap
     const roomNumber = inputValue.trim().split("/")[0];
@@ -45,14 +52,15 @@ export default function Search({ name, mapInstance }: SearchProps) {
           (f: any) => f.properties.floor === "1",
         );
 
-        // We update GeoJSON sources with returned paths
+        // Cap nhat data cho tung source
+        // SOurce cho tang G
         if (sourceG) {
           sourceG.setData({
             type: "FeatureCollection",
             features: featuresG,
           });
         }
-
+        // Source cho tang 1 neu có tồn tại
         if (source1) {
           source1.setData({
             type: "FeatureCollection",
@@ -60,7 +68,7 @@ export default function Search({ name, mapInstance }: SearchProps) {
           });
         }
 
-        // Show layer of the floor we are going to
+        // hiển thị layer theo layer đã được tạo sẵn trên geoserver
         if (data.targetFloor === 0) {
           mapInstance.setLayoutProperty(
             "workspace_network_analysis:mv_short_path_g_floor",
@@ -73,11 +81,13 @@ export default function Search({ name, mapInstance }: SearchProps) {
             "none",
           );
 
+          // Cập nhật giá trị của dropdown chọn tầng
           const floorSelect = document.getElementById(
             "active_floor_select",
           ) as HTMLSelectElement;
           if (floorSelect) floorSelect.value = "0";
         } else if (data.targetFloor === 1) {
+          // neu targetFloor là 1 thì hiển thị layer của tầng 1 và ẩn layer của tầng G
           mapInstance.setLayoutProperty(
             "workspace_network_analysis:mv_short_path_g_floor",
             "visibility",
@@ -94,6 +104,16 @@ export default function Search({ name, mapInstance }: SearchProps) {
           ) as HTMLSelectElement;
           if (floorSelect) floorSelect.value = "1";
         }
+        let zoomIn = true;
+        const mapZoom = mapInstance.getZoom();
+        console.log("Current zoom:", mapZoom);
+        const delta =
+          (zoomIn ? 1.5 : -1.5) +
+          getZoomAdjustment(mapInstance.getCenter().lat, 10);
+        console.log("Zoom adjustment:", delta);
+
+        const zoom = 18.999999;
+        mapInstance.easeTo({ zoom, duration: 1000 });
       }
     } catch (err) {
       console.error(err);

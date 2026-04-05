@@ -310,7 +310,7 @@ export default function G_Floor({
 
   return (
     <div className="g_floor">
-      <div className="layer-control z-10 absolute top-15 right-2 bg-white rounded-2xl shadow flex flex-col gap-2">
+      {/* <div className="layer-control z-10 absolute top-15 right-2 bg-white rounded-2xl shadow flex flex-col gap-2">
         <div className="layer-control_header h-[40px] flex items-center justify-center bg-blue-500 ">
           <h3 className="text-lg font-bold text-white">Layer Control</h3>
         </div>
@@ -344,7 +344,7 @@ export default function G_Floor({
             G Floor Layer
           </label>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
