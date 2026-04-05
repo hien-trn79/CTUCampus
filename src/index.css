@@ -169,3 +169,30 @@ body,
   color: #ffbf00;
   border-left: 5px solid #ffbf00;
 }
+
+/* -------------------- Search Result --------------------*/
+.result_search {
+  min-width: 30vw;
+  display: flex;
+  overflow: hidden;
+  justify-content: space-between;
+  padding-right: 16px;
+}
+
+.icon_result {
+  font-size: 30px;
+  color: #155dfc;
+}
+
+.result--title {
+  margin: 12px 0px;
+}
+
+.result_line {
+  min-height: 200px;
+  width: 5px;
+}
+
+.value {
+  font-weight: 400;
+}

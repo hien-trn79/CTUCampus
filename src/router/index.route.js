@@ -22,8 +22,9 @@ router.get("/search", async (req, res) => {
         startLat = startNodeRes.rows[0].lat;
       }
     }
-
+    // vi tri cau thang tang G va cau thang tang 1, dung de tim duong di khi co su chuyen tang
     const STAIR_NODE_G_FLOORid = 227;
+    // hien thi toa do cau thang tang G va cau thang tang 1 de kiem tra khi chay code
     const stairNodeG = await client.query(
       "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE id = $1",
       [STAIR_NODE_G_FLOORid],
@@ -81,14 +82,12 @@ router.get("/search", async (req, res) => {
     } else if (targetFloor === 1) {
       if (!stairLngG || !stairLng1) {
         await client.query("ROLLBACK");
-        return res
-          .status(400)
-          .json({
-            error:
-              "Chưa cấu hình tọa độ Cầu Thang, vui lòng kiểm tra ID cầu thang trong code search.",
-          });
+        return res.status(400).json({
+          error:
+            "Chưa cấu hình tọa độ Cầu Thang, vui lòng kiểm tra ID cầu thang trong code search.",
+        });
       }
-
+      // vi tri tu loi di chinh cua tang G den cau thang so 2 cuar tang G
       await client.query(insertPointGQuery, [startLng, startLat, 0]);
       await client.query(insertPointGQuery, [stairLngG, stairLatG, 0]);
 
@@ -105,6 +104,7 @@ router.get("/search", async (req, res) => {
 
     await client.query("COMMIT");
 
+    // chuyen thanh du lieu GeoJSON de tra ve cho client
     const featuresG = viewG.rows.map((row) => ({
       type: "Feature",
       geometry: JSON.parse(row.geojson),
@@ -117,6 +117,25 @@ router.get("/search", async (req, res) => {
       properties: { floor: "1" },
     }));
 
+    // Xu ly tinh do dai duong di tren tang G va tang 1 de tra ve cho client, neu co chuyen tang thi tinh tong do dai cua ca 2 tang
+    let totalDistance = 0;
+    if (targetFloor === 0) {
+      const distanceRes = await client.query(
+        "SELECT SUM(ST_Length(geom::geography)) as distance FROM mv_short_path_g_floor",
+      );
+      totalDistance = distanceRes.rows[0].distance || 0;
+    } else if (targetFloor === 1) {
+      const distanceGRes = await client.query(
+        "SELECT SUM(ST_Length(geom::geography)) as distance FROM mv_short_path_g_floor",
+      );
+      const distance1Res = await client.query(
+        "SELECT SUM(ST_Length(geom::geography)) as distance FROM mv_short_path_one_floor",
+      );
+      const distanceG = distanceGRes.rows[0].distance || 0;
+      const distance1 = distance1Res.rows[0].distance || 0;
+      totalDistance = distanceG + distance1;
+    }
+
     res.json({
       status: "success",
       targetFloor: targetFloor,
@@ -124,6 +143,7 @@ router.get("/search", async (req, res) => {
         type: "FeatureCollection",
         features: [...featuresG, ...features1],
       },
+      totalDistance: totalDistance,
     });
   } catch (error) {
     if (client) await client.query("ROLLBACK");

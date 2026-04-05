@@ -9,6 +9,8 @@ interface SearchProps {
 
 export default function Search({ name, mapInstance }: SearchProps) {
   const [inputValue, setInputValue] = useState<string>("");
+  const [totalDistance, setTotalDistance] = useState<number>(0);
+  const [isShowResult, setIsShowResult] = useState<boolean>(false);
   // Xu ly su kien khi nguoi dung nhap vao o tim kiem
 
   function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
@@ -36,6 +38,7 @@ export default function Search({ name, mapInstance }: SearchProps) {
       }
 
       if (mapInstance && data.data) {
+        setTotalDistance(data.totalDistance);
         // set data for both floors
         const sourceG = mapInstance.getSource(
           "shortest_path_g_floor",
@@ -114,6 +117,7 @@ export default function Search({ name, mapInstance }: SearchProps) {
 
         const zoom = 18.999999;
         mapInstance.easeTo({ zoom, duration: 1000 });
+        setIsShowResult(true);
       }
     } catch (err) {
       console.error(err);
@@ -121,18 +125,50 @@ export default function Search({ name, mapInstance }: SearchProps) {
   };
 
   return (
-    <div className="search custom_search z-11">
-      <i
-        className="fa-solid fa-magnifying-glass search-icon"
-        onClick={submitSearch}
-      ></i>
-      <input
-        type="text"
-        className="search--input"
-        placeholder={name}
-        onChange={(event) => setInputValue(event.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && submitSearch()}
-      />
+    <div className="search_sidebar">
+      <div className="search custom_search z-11">
+        <i
+          className="fa-solid fa-magnifying-glass search-icon"
+          onClick={submitSearch}
+        ></i>
+        <input
+          type="text"
+          className="search--input"
+          placeholder={name}
+          onChange={(event) => setInputValue(event.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && submitSearch()}
+        />
+      </div>
+      {isShowResult && (
+        <div className="result_search fixed top-20 left-2 bg-white rounded-lg shadow-lg z-11 w-80">
+          <div className="result_line bg-blue-500"></div>
+          <div className="result-content p-2">
+            <div className="result-header flex items-center gap-2 ">
+              <i className="fa-solid fa-map icon_result "></i>
+              <h2 className="result--title font-bold text-2xl text-blue-600">
+                Thông tin sau khi tìm kiếm
+              </h2>
+            </div>
+            <div className="result-body mt-4 pl-2">
+              <h3 className="startPoint font-bold text-lg mb-2">
+                Điểm bắt đầu:{" "}
+                <span className="startPoint_value value">
+                  Lối đi chính trường CNTT
+                </span>
+              </h3>
+              <h3 className="endPoint font-bold text-lg mb-2">
+                Điểm kết thúc:{" "}
+                <span className="endPoint_value value">Phòng {inputValue}</span>
+              </h3>
+              <h3 className="distance font-bold text-lg mb-2">
+                Tổng khoảng cách:{" "}
+                <span className="distance_value value">{totalDistance}</span>{" "}
+                mét
+              </h3>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
