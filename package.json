@@ -30,8 +30,10 @@
     "react-leaflet": "^5.0.0-rc.2",
     "react-leaflet-cluster": "^4.0.0",
     "react-router-dom": "^7.13.1",
+    "react-signify": "^1.7.2",
     "tailwindcss": "^4.0.0",
-    "three": "^0.182.0"
+    "three": "^0.182.0",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

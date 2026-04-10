@@ -3,7 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import db from "../config/index.config.js";
 import checkDatabaseError from "../middleware/checkErrorDatabase.middleware";
-import router from "../router/index.route.js";
+import seacrhRouter from "../router/index.route.js";
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -11,7 +11,7 @@ const port = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 // thuc hien cac route
-app.use("/api", router);
+app.use("/api", seacrhRouter);
 
 // Ket noi voi co so du lieu
 db.database

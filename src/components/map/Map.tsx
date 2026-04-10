@@ -18,7 +18,6 @@ export default function Map() {
   const showMenuBarRef = useRef(showMenuBar);
   const mapContainer = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
-
   const [dataCanTho, setDataCanTho] = useState(null);
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [notificationInfo, setNotificationInfo] = useState({
@@ -26,6 +25,10 @@ export default function Map() {
     content: "Notification Title",
     description: "This is the description of the notification.",
   });
+
+  const [currentMarkers, setCurrentMarkers] = useState<maplibregl.Marker[]>([]);
+  const [currentPoints, setCurrentPoints] = useState<[number, number][]>([]);
+
   // --------------------- Functions ----------------
   // Xu ly thao tac zoom den
   function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
@@ -44,6 +47,10 @@ export default function Map() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [buildingClicked, setBuildingClicked] = useState<any>(null);
+
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,7 +104,7 @@ export default function Map() {
       style: "https://tiles.openfreemap.org/styles/bright",
       zoom: 18,
       center: [105.769053, 10.030951],
-      pitch: 60,
+      pitch: 10,
       canvasContextAttributes: { antialias: true },
     });
 
@@ -128,8 +135,8 @@ export default function Map() {
       });
     });
 
-    let currentMarkers_layerCTU: maplibregl.Marker[] = [];
-    let currentPoints_layerCTU: [number, number][] = [];
+    // let currentMarkers: maplibregl.Marker[] = [];
+    // let currentPoints: [number, number][] = [];
     let isEditingCTU = false;
 
     const handleRouteCTUToggle = () => {
@@ -141,9 +148,10 @@ export default function Map() {
       const btn = document.querySelector(".button_find_route");
       if (!isEditingCTU) {
         isEditingCTU = true;
-        currentMarkers_layerCTU.forEach((m) => m.remove());
-        currentMarkers_layerCTU = [];
-        currentPoints_layerCTU = [];
+        currentMarkers.forEach((m) => m.remove());
+        currentPoints.length = 0; // Clear points array
+        setCurrentMarkers([]);
+        setCurrentPoints([]);
 
         // Reset layer
         const source = map.getSource("route") as maplibregl.GeoJSONSource;
@@ -157,14 +165,15 @@ export default function Map() {
 
         if (btn) {
           let zoomIn = true;
+          const center: [number, number] = [105.769098, 10.031102];
           const mapZoom = map.getZoom();
           console.log("Current zoom:", mapZoom);
           const delta =
-            (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(map.getCenter().lat, 10);
+            (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(center[1], 10);
           console.log("Zoom adjustment:", delta);
 
           const zoom = 17;
-          map.easeTo({ zoom, duration: 1000 });
+          map.easeTo({ center, zoom, duration: 1000 });
 
           btn.textContent = "Submit Route CTU";
           btn.classList.add("bg-red-500", "hover:bg-red-700", "active");
@@ -178,12 +187,8 @@ export default function Map() {
             "Vui lòng chọn điểm bắt đầu và kết thúc trên bản đồ (Khu II).",
         });
       } else {
-        if (currentPoints_layerCTU.length === 2) {
-          getRoute(
-            currentPoints_layerCTU[0],
-            currentPoints_layerCTU[1],
-            map,
-          ).then(() => {
+        if (currentPoints.length === 2) {
+          getRoute(currentPoints[0], currentPoints[1], map).then(() => {
             if (map.getLayer("route_layer")) {
               map.setLayoutProperty("route_layer", "visibility", "visible");
             }
@@ -205,7 +210,7 @@ export default function Map() {
       }
     };
 
-    // Gắn listener vào nút (Map.tsx)
+    // Gắn listener vào nút
     const initBtnCTU = () => {
       const btn = document.querySelector(".button_find_route");
       if (btn) {
@@ -225,7 +230,7 @@ export default function Map() {
       const centerPoint = center(features);
 
       if (isEditingCTU) {
-        if (currentPoints_layerCTU.length >= 2) {
+        if (currentPoints.length >= 2) {
           setShowNotification(true);
           setNotificationInfo({
             type: "error",
@@ -239,15 +244,16 @@ export default function Map() {
           .setLngLat(centerPoint.geometry.coordinates as [number, number])
           .setPopup(
             new maplibregl.Popup().setHTML(
-              currentPoints_layerCTU.length === 0 ? "Start" : "End",
+              currentPoints.length === 0 ? "Start" : "End",
             ),
           )
           .addTo(map);
 
-        currentMarkers_layerCTU.push(marker);
-        currentPoints_layerCTU.push(
+        setCurrentMarkers((prev) => [...prev, marker]);
+        setCurrentPoints((prev) => [
+          ...prev,
           centerPoint.geometry.coordinates as [number, number],
-        );
+        ]);
         return; // Không mở menu bar khi đang mode tìm đường
       }
 
@@ -267,7 +273,7 @@ export default function Map() {
       if (features.length > 0) return;
 
       if (isEditingCTU) {
-        if (currentPoints_layerCTU.length >= 2) {
+        if (currentPoints.length >= 2) {
           setShowNotification(true);
           setNotificationInfo({
             type: "warning",
@@ -284,17 +290,15 @@ export default function Map() {
           .setLngLat(coords)
           .setPopup(
             new maplibregl.Popup().setHTML(
-              currentPoints_layerCTU.length === 0 ? "Start" : "End",
+              currentPoints.length === 0 ? "Start" : "End",
             ),
           )
           .addTo(map);
 
-        currentMarkers_layerCTU.push(marker);
-        currentPoints_layerCTU.push(coords);
+        currentMarkers.push(marker);
+        currentPoints.push(coords);
         return;
       }
-
-      // đóng menu bar
       setShowMenuBar(false);
       showMenuBarRef.current = false;
     });
@@ -307,13 +311,16 @@ export default function Map() {
 
     setMapInstance(map);
 
+    if (document.querySelector(".result_search")) {
+      console.log("Found result_search element");
+    }
     return () => {
       setShowMenuBar(false);
-      currentMarkers_layerCTU.forEach((m) => m.remove());
+      currentMarkers.forEach((m) => m.remove());
       map.remove();
     };
   }, [setShowMenuBar, setBuildingClicked]);
-
+  // them cac layer khac o day
   useEffect(() => {
     if (!dataCanTho || !mapInstance) return;
 
@@ -456,24 +463,48 @@ export default function Map() {
             Find Route
           </button>
         </div>
-        <Search name={buildingClicked?.name || "Tìm kiếm"} mapInstance={mapInstance} />
-        <MapGeolocate mapInstance={mapInstance} />
+        <Search
+          name={buildingClicked?.name || "Tìm kiếm"}
+          mapInstance={mapInstance}
+          onShowResult={(show) => {
+            if (show) {
+              setShowMenuBar(false);
+            }
+          }}
+          currentMarkers={currentMarkers}
+          setCurrentMarkers={setCurrentMarkers}
+          setCurrentPoints={setCurrentPoints}
+        />
+        <MapGeolocate
+          mapInstance={mapInstance}
+          onUserLocation={setUserLocation}
+        />
         <G_Floor
           mapInstance={mapInstance}
           setNotificationInfo={setNotificationInfo}
           setShowNotification={setShowNotification}
+          currentMarkers={currentMarkers}
+          setCurrentMarkers={setCurrentMarkers}
+          currentPoints={currentPoints}
+          setCurrentPoints={setCurrentPoints}
         />
         <One_Floor
           mapInstance={mapInstance}
           setNotificationInfo={setNotificationInfo}
           setShowNotification={setShowNotification}
+          currentMarkers={currentMarkers}
+          setCurrentMarkers={setCurrentMarkers}
+          currentPoints={currentPoints}
+          setCurrentPoints={setCurrentPoints}
         />
       </div>
       <div className="menuBar-container">
         <MenuBar
           show={showMenuBar}
           onClose={() => setShowMenuBar(false)}
-          building={buildingClicked}
+          building={buildingClicked as any}
+          map={mapInstance}
+          userLocation={userLocation}
         />
       </div>
 

@@ -11,12 +11,20 @@ interface OneFloorProps {
     content: string;
     description: string;
   }) => void;
+  currentMarkers: maplibregl.Marker[];
+  setCurrentMarkers: (markers: maplibregl.Marker[]) => void;
+  currentPoints: [number, number][];
+  setCurrentPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
 export default function One_Floor({
   mapInstance,
   setShowNotification,
   setNotificationInfo,
+  currentMarkers,
+  setCurrentMarkers,
+  currentPoints,
+  setCurrentPoints,
 }: OneFloorProps) {
   const [data, setData] = useState(null);
   const [networkData, setNetworkData] = useState<FeatureCollection | null>(
@@ -173,8 +181,9 @@ export default function One_Floor({
       const editButton = document.querySelector(".button_find_route");
 
       const clearMakers = () => {
-        markers.forEach((marker) => marker.remove());
-        markers = [];
+        currentMarkers.forEach((marker) => marker.remove());
+        setCurrentMarkers([]);
+        setCurrentPoints([]);
         startPoint = null;
         endPoint = null;
       };
@@ -286,12 +295,12 @@ export default function One_Floor({
           startPoint = new maplibregl.Marker({ color: "green" })
             .setLngLat(e.lngLat)
             .addTo(mapInstance);
-          markers.push(startPoint);
+          currentMarkers.push(startPoint);
         } else if (!endPoint) {
           endPoint = new maplibregl.Marker({ color: "red" })
             .setLngLat(e.lngLat)
             .addTo(mapInstance);
-          markers.push(endPoint);
+          currentMarkers.push(endPoint);
         } else {
           setShowNotification(true);
           setNotificationInfo({

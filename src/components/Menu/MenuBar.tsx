@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import MenuBarItem from "./MenuBarItem";
+import ShowOptionRoute from "./OptionRoute";
 
 interface MenuBarProps {
   show: boolean;
@@ -18,6 +20,7 @@ interface MenuBarProps {
       coordinates: number[] | number[][] | number[][][];
     };
   };
+  map: maplibregl.Map | null;
 }
 
 type buildingFetch = {
@@ -26,13 +29,24 @@ type buildingFetch = {
   src_bg: string;
   building: string;
   way_area: number;
+  website: string;
+  introduce: string;
+  address: string;
 };
 
-export default function MenuBar({ show, onClose, building }: MenuBarProps) {
+export default function MenuBar({
+  map,
+  show,
+  onClose,
+  building,
+  userLocation,
+}: MenuBarProps & { userLocation?: [number, number] | null }) {
   const props = building?.properties;
   const [buildingClicked, setBuildingClicked] = useState<null | buildingFetch>(
     null,
   );
+  const [showRouteOption, setShowRouteOption] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       if (props) {
@@ -69,7 +83,7 @@ export default function MenuBar({ show, onClose, building }: MenuBarProps) {
         }}
       >
         <div
-          className="closeSidebar cursor-pointer  right-0 absolute"
+          className="closeSidebar cursor-pointer right-0 absolute text-white top-0"
           onClick={onClose}
         >
           <svg
@@ -102,18 +116,58 @@ export default function MenuBar({ show, onClose, building }: MenuBarProps) {
               <h3 className="building_name text-2xl font-bold py-5 ">
                 {props?.name}{" "}
               </h3>
-
-              <ul className="buildind_list">
-                <li className="building_list--item">
-                  Diện tích: {buildingClicked?.way_area || "N/A"} m²
-                </li>
-                <li className="building_list--item">
-                  Building: {buildingClicked?.building || "N/A"}
-                </li>
-              </ul>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded findRoute-button"
+                onClick={() => {
+                  setShowRouteOption(true);
+                }}
+              >
+                <i className="fa-solid fa-diamond-turn-right"></i>
+                Tìm đường đi
+              </button>
             </div>
+            <ul className="buildind_list">
+              <MenuBarItem
+                label="Diện tích"
+                value={buildingClicked?.way_area || "N/A"}
+                icon="fa-solid fa-chart-area"
+              />
+              <MenuBarItem
+                label="Loại công trình"
+                value={buildingClicked?.building || "N/A"}
+                icon="fa-solid fa-building"
+              />
+              <MenuBarItem
+                label="Website"
+                value={buildingClicked?.website || "N/A"}
+                icon="fa-brands fa-chrome"
+              />
+              <MenuBarItem
+                label="Địa chỉ"
+                value={buildingClicked?.address || "N/A"}
+                icon="fa-solid fa-map-marker-alt"
+              />
+              <li className="building_list--item introduce">
+                <i className="fa-solid fa-info menuBar-icon"></i>
+                <label htmlFor="" className="menuBar_item-label">
+                  Giới thiệu
+                </label>
+                <p className="menuBar_item-content">
+                  {buildingClicked?.introduce || "N/A"}
+                </p>
+              </li>
+            </ul>
           </div>
         </div>
+        {showRouteOption && (
+          <ShowOptionRoute
+            building={buildingClicked as buildingFetch}
+            setShow={setShowRouteOption}
+            map={map}
+            buildingFeature={building}
+            userLocation={userLocation}
+          />
+        )}
       </div>
     </>
   );

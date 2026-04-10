@@ -11,12 +11,19 @@ interface GFloorProps {
     content: string;
     description: string;
   }) => void;
+  currentMarkers: maplibregl.Marker[];
+  setCurrentMarkers: (markers: maplibregl.Marker[]) => void;
+  currentPoints: [number, number][];
+  setCurrentPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
 export default function G_Floor({
   mapInstance,
   setShowNotification,
   setNotificationInfo,
+  currentMarkers,
+  setCurrentMarkers,
+  setCurrentPoints,
 }: GFloorProps) {
   const [data, setData] = useState(null);
 
@@ -168,12 +175,12 @@ export default function G_Floor({
       let isEditing = false;
       let startPoint: maplibregl.Marker | null = null;
       let endPoint: maplibregl.Marker | null = null;
-      let markers: maplibregl.Marker[] = [];
       const editButton = document.querySelector(".button_find_route");
 
       const clearMarkers = () => {
-        markers.forEach((marker) => marker.remove());
-        markers = [];
+        currentMarkers.forEach((marker) => marker.remove());
+        setCurrentMarkers([]);
+        setCurrentPoints([]);
         startPoint = null;
         endPoint = null;
       };
@@ -207,15 +214,14 @@ export default function G_Floor({
           if (editButton) {
             // zoom den khu vuc tang G
             let zoomIn = true;
+            const center: [number, number] = [105.769098, 10.031102];
             const mapZoom = mapInstance.getZoom();
-            console.log("Current zoom:", mapZoom);
             const delta =
-              (zoomIn ? 1.5 : -1.5) +
-              getZoomAdjustment(mapInstance.getCenter().lat, 10);
+              (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(center[1], 10);
             console.log("Zoom adjustment:", delta);
 
             const zoom = 19.36992042154802;
-            mapInstance.easeTo({ zoom, duration: 1000 });
+            mapInstance.easeTo({ center, zoom, duration: 1000 });
 
             editButton.textContent = "Submit Route Tầng G";
             editButton.classList.add("active");
@@ -287,13 +293,13 @@ export default function G_Floor({
             .setLngLat(event.lngLat)
             .setPopup(new maplibregl.Popup().setHTML("Start Point"))
             .addTo(mapInstance);
-          markers.push(startPoint);
+          currentMarkers.push(startPoint);
         } else if (!endPoint) {
           endPoint = new maplibregl.Marker({ color: "red" })
             .setLngLat(event.lngLat)
             .setPopup(new maplibregl.Popup().setHTML("End Point"))
             .addTo(mapInstance);
-          markers.push(endPoint);
+          currentMarkers.push(endPoint);
         } else {
           setShowNotification(true);
           setNotificationInfo({

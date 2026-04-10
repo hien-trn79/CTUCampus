@@ -138,6 +138,7 @@ router.get("/search", async (req, res) => {
 
     res.json({
       status: "success",
+      targetNode: { lng: idGoalLng, lat: idGoalLat },
       targetFloor: targetFloor,
       data: {
         type: "FeatureCollection",
