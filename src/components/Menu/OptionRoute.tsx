@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { center } from "@turf/center";
+import bbox from "@turf/bbox";
 
 interface OptionRouteProps {
   setShow: (show: boolean) => void;
@@ -33,6 +34,7 @@ export default function showOptionRoute({
   };
 
   const [startInput, setStartInput] = useState<string>("");
+  const [endInputSearch, setEndInputSearch] = useState<string>("");
 
   // ham tim duong
   const getRoute = async (
@@ -47,7 +49,7 @@ export default function showOptionRoute({
       );
       // trả về kết quả dưới dạng JSON
       const json = await query.json();
-      if (!json.routes || json.routes.length === 0) return;
+      if (!json.routes || json.routes.length === 0) return null;
       const data = json.routes[0];
       const route = data.geometry;
 
@@ -61,16 +63,17 @@ export default function showOptionRoute({
           geometry: route,
         });
       }
+      return route;
     } catch (error) {
       console.error("Error fetching route:", error);
+      return null;
     }
   };
-
-  const [endInput, setEndInput] = useState(building?.name || "");
 
   // State for suggestions
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeInput, setActiveInput] = useState<"start" | "end" | null>(null);
 
   // neu dang bat geolocation thi se tu dong dien vao o diem xuat phat
   useEffect(() => {
@@ -79,16 +82,17 @@ export default function showOptionRoute({
     }
   }, [userLocation]);
 
+  // neu co building duoc chon tu search thi se dien vao o diem den
   useEffect(() => {
     if (building) {
-      setEndInput(building.name || "");
+      setEndInputSearch(building.name || "");
     }
   }, [building]);
 
   // Xử lý phần gợi ý tìm kiếm
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      const query = startInput.trim();
+    const fetchSuggestions = async (queryStr: string) => {
+      const query = queryStr.trim();
       // Nếu người dùng bật vị trí cá nhân
       if (!query || query === "Vị trí của bạn") {
         setSuggestions([]);
@@ -150,10 +154,20 @@ export default function showOptionRoute({
       }
     };
 
+    const currentQuery =
+      activeInput === "start"
+        ? startInput
+        : activeInput === "end"
+          ? endInputSearch
+          : "";
+
     // cài đặt thời gian chờ để tránh gọi API quá nhiều khi người dùng gõ liên tục
-    const timeoutId = setTimeout(fetchSuggestions, 300);
+    const timeoutId = setTimeout(() => {
+      if (activeInput) fetchSuggestions(currentQuery);
+    }, 300);
+
     return () => clearTimeout(timeoutId);
-  }, [startInput, map]);
+  }, [startInput, endInputSearch, activeInput, map]);
 
   const handleRouteSearch = async () => {
     if (!map) return;
@@ -204,7 +218,7 @@ export default function showOptionRoute({
       return;
     }
 
-    let endStr = endInput.trim();
+    let endStr = endInputSearch.trim();
     if (!endStr) return;
 
     // Kiểm tra tồn tại của phòng (e.g. 101/DI or just room number if building known)
@@ -277,13 +291,25 @@ export default function showOptionRoute({
           // Đối với lộ trình bên ngoài, sẽ dẫn đến cửa chính của tòa nhà (hardcoded Entrance of CNTT [105.769098, 10.031102] theo mặc định của API)
           // Outdoor routing -> route to entrance of the building (hardcoded Entrance of CNTT [105.769098, 10.031102] according to api default)
           const entranceCoords: [number, number] = [105.769098, 10.031102];
-          await getRoute(startCoords, entranceCoords, map);
+          const routeGeoJSON = await getRoute(startCoords, entranceCoords, map);
 
           if (map.getLayer("route_layer")) {
             map.setLayoutProperty("route_layer", "visibility", "visible");
           }
 
-          map.easeTo({ center: entranceCoords, zoom: 18.5, duration: 1000 });
+          if (routeGeoJSON) {
+            const routeBbox = bbox({
+              type: "Feature",
+              geometry: routeGeoJSON,
+              properties: {},
+            });
+            map.fitBounds(routeBbox as [number, number, number, number], {
+              padding: { top: 50, bottom: 50, left: 50, right: 350 }, // add padding specifically to offset the menu on the right
+              duration: 1000,
+            });
+          } else {
+            map.easeTo({ center: entranceCoords, zoom: 12, duration: 1000 });
+          }
         }
       } catch (err) {
         console.error(err);
@@ -298,8 +324,12 @@ export default function showOptionRoute({
         const source = map.getSource("khu_ii_dhct") as any;
         if (source && source._data && source._data.features) {
           const features = source._data.features;
-          const matchingFeature = features.find((f: any) =>
-            f.properties?.name?.toLowerCase().includes(endStr.toLowerCase()),
+          const matchingFeature = features.find(
+            (f: any) =>
+              f.properties?.name
+                ?.toLowerCase()
+                .includes(endStr.toLowerCase()) ||
+              f.properties?.name + " (Trường ĐH Cần Thơ)" === endStr,
           );
           if (matchingFeature) {
             const pt = center(matchingFeature);
@@ -308,16 +338,45 @@ export default function showOptionRoute({
         }
       }
 
+      // Nếu không tìm thấy trong format nội khu, dùng Photon (như Google API) để tìm điểm bất kỳ
+      if (!endCoords) {
+        try {
+          const photonRes = await fetch(
+            `https://photon.komoot.io/api/?q=${encodeURIComponent(endStr)}&limit=1&lat=10.03&lon=105.77`,
+          );
+          const photonData = await photonRes.json();
+          if (photonData.features && photonData.features.length > 0) {
+            const coords = photonData.features[0].geometry.coordinates;
+            endCoords = [coords[0], coords[1]];
+          }
+        } catch (error) {
+          console.error("Geocoding API error:", error);
+        }
+      }
+
       if (!endCoords) {
         alert("Không tìm thấy vị trí đến!");
         return;
       }
 
-      await getRoute(startCoords, endCoords, map);
+      const routeGeoJSON = await getRoute(startCoords, endCoords, map);
       if (map.getLayer("route_layer")) {
         map.setLayoutProperty("route_layer", "visibility", "visible");
       }
-      map.easeTo({ center: endCoords, zoom: 17, duration: 1000 });
+
+      if (routeGeoJSON) {
+        const routeBbox = bbox({
+          type: "Feature",
+          geometry: routeGeoJSON,
+          properties: {},
+        });
+        map.fitBounds(routeBbox as [number, number, number, number], {
+          padding: { top: 50, bottom: 50, left: 50, right: 350 }, // Padding for the visual menu
+          duration: 1000,
+        });
+      } else {
+        map.easeTo({ zoom: 9, duration: 1000 });
+      }
     }
 
     setShow(false);
@@ -356,28 +415,35 @@ export default function showOptionRoute({
             placeholder="Điểm xuất phát"
             autoFocus
             value={startInput}
-            onFocus={() => setShowSuggestions(true)}
+            onFocus={() => {
+              setActiveInput("start");
+              setShowSuggestions(true);
+            }}
             onChange={(e) => {
               setStartInput(e.target.value);
+              setActiveInput("start");
               setShowSuggestions(true);
             }}
           />
-          {showSuggestions && suggestions.length > 0 && (
-            <ul className="absolute top-12 left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-              {suggestions.map((item, id) => (
-                <li
-                  key={id}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 text-sm"
-                  onClick={() => {
-                    setStartInput(item.display_name);
-                    setShowSuggestions(false);
-                  }}
-                >
-                  {item.display_name}
-                </li>
-              ))}
-            </ul>
-          )}
+          {showSuggestions &&
+            activeInput === "start" &&
+            suggestions.length > 0 && (
+              <ul className="absolute top-12 left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {suggestions.map((item, id) => (
+                  <li
+                    key={id}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 text-sm"
+                    onClick={() => {
+                      setStartInput(item.display_name);
+                      setShowSuggestions(false);
+                      setActiveInput(null);
+                    }}
+                  >
+                    {item.display_name}
+                  </li>
+                ))}
+              </ul>
+            )}
         </div>
 
         <div className="routeEnd routeSide mt-4">
@@ -385,10 +451,37 @@ export default function showOptionRoute({
           <input
             type="text"
             className="routeEnd-input form-control"
-            placeholder="Điểm đến (VD: Phòng 101/DI, Khoa Toán...)"
-            value={endInput}
-            onChange={(e) => setEndInput(e.target.value)}
+            placeholder="Điểm đến"
+            value={endInputSearch}
+            onFocus={() => {
+              setActiveInput("end");
+              setShowSuggestions(true);
+            }}
+            onChange={(e) => {
+              setEndInputSearch(e.target.value);
+              setActiveInput("end");
+              setShowSuggestions(true);
+            }}
           />
+          {showSuggestions &&
+            activeInput === "end" &&
+            suggestions.length > 0 && (
+              <ul className="absolute top-30 left-0 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {suggestions.map((item, id) => (
+                  <li
+                    key={id}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 text-sm"
+                    onClick={() => {
+                      setEndInputSearch(item.display_name);
+                      setShowSuggestions(false);
+                      setActiveInput(null);
+                    }}
+                  >
+                    {item.display_name}
+                  </li>
+                ))}
+              </ul>
+            )}
         </div>
 
         <div className="button_submitFind">

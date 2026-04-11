@@ -46,13 +46,13 @@ router.get("/search", async (req, res) => {
 
     let targetFloor = 1;
     let endNodeRes = await client.query(
-      "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes WHERE name ILIKE $1 LIMIT 1",
+      "SELECT ST_X(geom) as lng, ST_Y(geom) as lat, name FROM network_nodes WHERE name ILIKE $1 LIMIT 1",
       ["%" + room + "%"],
     );
 
     if (endNodeRes.rows.length === 0) {
       endNodeRes = await client.query(
-        "SELECT ST_X(geom) as lng, ST_Y(geom) as lat FROM network_nodes_g_floor WHERE name ILIKE $1 LIMIT 1",
+        "SELECT ST_X(geom) as lng, ST_Y(geom) as lat, name FROM network_nodes_g_floor WHERE name ILIKE $1 LIMIT 1",
         ["%" + room + "%"],
       );
       targetFloor = 0;
@@ -67,6 +67,7 @@ router.get("/search", async (req, res) => {
 
     const idGoalLng = endNodeRes.rows[0].lng;
     const idGoalLat = endNodeRes.rows[0].lat;
+    const idGoalName = endNodeRes.rows[0].name;
 
     await client.query("DELETE FROM points_g_floor");
     await client.query("DELETE FROM points");
@@ -140,6 +141,7 @@ router.get("/search", async (req, res) => {
       status: "success",
       targetNode: { lng: idGoalLng, lat: idGoalLat },
       targetFloor: targetFloor,
+      targetNodeName: idGoalName,
       data: {
         type: "FeatureCollection",
         features: [...featuresG, ...features1],

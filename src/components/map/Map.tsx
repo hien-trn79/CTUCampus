@@ -45,6 +45,14 @@ export default function Map() {
     }
   });
 
+  const cleanMakers = () => {
+    currentMarkers.forEach((marker) => {
+      marker.remove();
+    });
+    setCurrentMarkers([]);
+    setCurrentPoints([]);
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [buildingClicked, setBuildingClicked] = useState<any>(null);
 
@@ -133,6 +141,19 @@ export default function Map() {
           "line-opacity": 0.8,
         },
       });
+
+      // Tat duong di khi nhan vao o tim kiem
+      document
+        .querySelector(".search--input")
+        ?.addEventListener("keydown", (e) => {
+          if ((e as KeyboardEvent).key == "Enter") {
+            cleanMakers();
+            if (map.getLayer("route_layer")) {
+              map.setLayoutProperty("route_layer", "visibility", "none");
+            }
+            e.preventDefault();
+          }
+        });
     });
 
     // let currentMarkers: maplibregl.Marker[] = [];
@@ -164,14 +185,7 @@ export default function Map() {
         }
 
         if (btn) {
-          let zoomIn = true;
           const center: [number, number] = [105.769098, 10.031102];
-          const mapZoom = map.getZoom();
-          console.log("Current zoom:", mapZoom);
-          const delta =
-            (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(center[1], 10);
-          console.log("Zoom adjustment:", delta);
-
           const zoom = 17;
           map.easeTo({ center, zoom, duration: 1000 });
 
@@ -310,10 +324,6 @@ export default function Map() {
     });
 
     setMapInstance(map);
-
-    if (document.querySelector(".result_search")) {
-      console.log("Found result_search element");
-    }
     return () => {
       setShowMenuBar(false);
       currentMarkers.forEach((m) => m.remove());

@@ -21,6 +21,7 @@ export default function Search({
   setCurrentPoints,
 }: SearchProps) {
   const [inputValue, setInputValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const [totalDistance, setTotalDistance] = useState<number>(0);
   const [isShowResult, setIsShowResult] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
@@ -31,7 +32,11 @@ export default function Search({
   const markerRef = useRef<maplibregl.Marker | null>(null);
 
   const cleanMarkers = () => {
-    currentMarkers.forEach((marker) => console.log(marker));
+    currentMarkers.forEach((marker) => {
+      marker.remove();
+    });
+    setCurrentMarkers([]);
+    setCurrentPoints([]);
   };
 
   // Trang thai cho xu ly autocomplete
@@ -226,9 +231,13 @@ export default function Search({
             const mapZoom = mapInstance.getZoom();
             const delta =
               (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(center[1], 10);
+            const zoomG = 19.36992042154802;
+            const zoomOne = 18.999999;
 
-            const zoom = 18.999999;
-            mapInstance.easeTo({ center, zoom, duration: 1000 });
+            if (data.targetFloor === 0)
+              mapInstance.easeTo({ center, zoom: zoomG, duration: 1000 });
+            else if (data.targetFloor === 1)
+              mapInstance.easeTo({ center, zoom: zoomOne, duration: 1000 });
 
             setIsShowResult(true);
             onShowResult?.(true);
@@ -302,16 +311,18 @@ export default function Search({
           type="text"
           className="search--input w-full"
           placeholder={name}
-          value={inputValue}
           onFocus={() => setShowSuggestions(true)}
           onChange={(event) => {
-            setInputValue(event.target.value);
+            setInputValue((event.target as HTMLInputElement).value);
             setShowSuggestions(true);
           }}
+          value={inputValue}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              setShowSuggestions(false);
               submitSearch();
+              setSearchValue(inputValue);
+              cleanMarkers();
+              setShowSuggestions(false);
             }
           }}
         />
@@ -366,13 +377,15 @@ export default function Search({
                     <i className="fa-solid fa-location-dot text-red-500 routeEnd-icon mr-1"></i>
                     Điểm kết thúc:
                     <span className="endPoint_value value ml-2">
-                      Phòng {inputValue}
+                      {data.targetNodeName || "Không xác định"}
                     </span>
                   </h3>
                   <h3 className="endPoint font-bold text-lg mb-2">
                     Tầng kết thúc:{" "}
                     <span className="endPoint_value value ml-2">
-                      Phòng {inputValue}
+                      {data.targetFloor === 0
+                        ? "Tầng trệt"
+                        : `Tầng ${data.targetFloor}`}
                     </span>
                   </h3>
                   <h3 className="distance font-bold text-lg mb-2">
