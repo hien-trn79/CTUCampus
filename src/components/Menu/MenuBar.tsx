@@ -21,6 +21,9 @@ interface MenuBarProps {
     };
   };
   map: maplibregl.Map | null;
+  currentMarkers: maplibregl.Marker[];
+  setCurrentMarkers: (markers: maplibregl.Marker[]) => void;
+  setCurrentPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
 type buildingFetch = {
@@ -40,6 +43,9 @@ export default function MenuBar({
   onClose,
   building,
   userLocation,
+  currentMarkers,
+  setCurrentMarkers,
+  setCurrentPoints,
 }: MenuBarProps & { userLocation?: [number, number] | null }) {
   const props = building?.properties;
   const [buildingClicked, setBuildingClicked] = useState<null | buildingFetch>(
@@ -166,6 +172,9 @@ export default function MenuBar({
             map={map}
             buildingFeature={building}
             userLocation={userLocation}
+            currentMarkers={currentMarkers}
+            setCurrentMarkers={setCurrentMarkers}
+            setCurrentPoints={setCurrentPoints}
           />
         )}
       </div>

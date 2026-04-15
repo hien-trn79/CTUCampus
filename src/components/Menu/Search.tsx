@@ -37,6 +37,10 @@ export default function Search({
     });
     setCurrentMarkers([]);
     setCurrentPoints([]);
+    if (markerRef.current) {
+      markerRef.current.remove();
+      markerRef.current = null;
+    }
   };
 
   // Trang thai cho xu ly autocomplete
@@ -282,10 +286,13 @@ export default function Search({
           uniqueParts.slice(1).join(", ") || (p.name ? uniqueParts[0] : "");
 
         if (mapInstance) {
+          cleanMarkers(); // Thêm dòng này để xoá markers trước khi tạo marker ở địa điểm mới
+
           // Thêm marker mới
           markerRef.current = new maplibregl.Marker({ color: "#FF0000" })
             .setLngLat(coords)
             .addTo(mapInstance);
+          setCurrentMarkers([markerRef.current]);
 
           mapInstance.easeTo({ center: coords, zoom: 17, duration: 1000 });
         }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { center } from "@turf/center";
 import bbox from "@turf/bbox";
+import maplibregl from "maplibre-gl";
 
 interface OptionRouteProps {
   setShow: (show: boolean) => void;
@@ -19,6 +20,9 @@ interface OptionRouteProps {
   buildingFeature?: any;
   userLocation?: [number, number] | null;
   map: maplibregl.Map | null;
+  currentMarkers: maplibregl.Marker[];
+  setCurrentMarkers: (markers: maplibregl.Marker[]) => void;
+  setCurrentPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
 export default function showOptionRoute({
@@ -27,6 +31,9 @@ export default function showOptionRoute({
   buildingFeature,
   userLocation,
   map,
+  currentMarkers,
+  setCurrentMarkers,
+  setCurrentPoints,
 }: OptionRouteProps) {
   const onClose = () => {
     // Logic to close the option route
@@ -242,6 +249,10 @@ export default function showOptionRoute({
     let endStr = endInputSearch.trim();
     if (!endStr) return;
 
+    currentMarkers.forEach((m) => m.remove());
+    setCurrentMarkers([]);
+    setCurrentPoints([]);
+
     // Kiểm tra tồn tại của phòng (e.g. 101/DI or just room number if building known)
     let isRoomSearch = false;
     const parts = endStr.split("/");
@@ -332,6 +343,15 @@ export default function showOptionRoute({
           const entranceCoords: [number, number] = [105.768927, 10.03084]; // Cua chinh cua tang 1 CICT
           const routeGeoJSON = await getRoute(startCoords, entranceCoords, map);
 
+          const m1 = new maplibregl.Marker({ color: "green" })
+            .setLngLat(startCoords)
+            .addTo(map);
+          const m2 = new maplibregl.Marker({ color: "red" })
+            .setLngLat(entranceCoords)
+            .addTo(map);
+          setCurrentMarkers([m1, m2]);
+          setCurrentPoints([startCoords, entranceCoords]);
+
           if (map.getLayer("route_layer")) {
             map.setLayoutProperty("route_layer", "visibility", "visible");
           }
@@ -400,6 +420,16 @@ export default function showOptionRoute({
 
       // Tìm lộ trình từ điểm bắt đầu đến điểm kết thúc
       const routeGeoJSON = await getRoute(startCoords, endCoords, map);
+
+      const m1 = new maplibregl.Marker({ color: "green" })
+        .setLngLat(startCoords)
+        .addTo(map);
+      const m2 = new maplibregl.Marker({ color: "red" })
+        .setLngLat(endCoords)
+        .addTo(map);
+      setCurrentMarkers([m1, m2]);
+      setCurrentPoints([startCoords, endCoords]);
+
       if (map.getLayer("route_layer")) {
         map.setLayoutProperty("route_layer", "visibility", "visible");
       }

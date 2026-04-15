@@ -247,14 +247,16 @@ export default function Map() {
         if (currentPoints.length >= 2) {
           setShowNotification(true);
           setNotificationInfo({
-            type: "error",
+            type: "warning",
             content: "Lỗi chọn đường đi Khu II",
             description: "Bạn đã chọn đủ 2 điểm. Vui lòng Submit để tìm đường.",
           });
           return;
         }
 
-        const marker = new maplibregl.Marker({ color: "red" })
+        const marker = new maplibregl.Marker({
+          color: currentPoints.length === 0 ? "green" : "red",
+        })
           .setLngLat(centerPoint.geometry.coordinates as [number, number])
           .setPopup(
             new maplibregl.Popup().setHTML(
@@ -300,7 +302,9 @@ export default function Map() {
         const lngLat = e.lngLat;
         const coords: [number, number] = [lngLat.lng, lngLat.lat];
 
-        const marker = new maplibregl.Marker({ color: "blue" })
+        const marker = new maplibregl.Marker({
+          color: currentPoints.length === 0 ? "green" : "red",
+        })
           .setLngLat(coords)
           .setPopup(
             new maplibregl.Popup().setHTML(
@@ -515,6 +519,9 @@ export default function Map() {
           building={buildingClicked as any}
           map={mapInstance}
           userLocation={userLocation}
+          currentMarkers={currentMarkers}
+          setCurrentMarkers={setCurrentMarkers}
+          setCurrentPoints={setCurrentPoints}
         />
       </div>
 
