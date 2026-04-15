@@ -75,19 +75,38 @@ export default function showOptionRoute({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeInput, setActiveInput] = useState<"start" | "end" | null>(null);
 
+  // ham dung de dong suggestion khi click ben ngoai
+  const onCloseSuggestions = () => {
+    setShowSuggestions(false);
+    setActiveInput(null);
+  };
+
+  // bat su kien click ben ngoai de dong suggestion khi nguoi dung click ra ngoai o input
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(".optionRoute-input_list")) {
+      onCloseSuggestions();
+    }
+  };
+
+  // xử lý sự kiện click bên ngoài để đóng gợi ý tìm kiếm
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   // neu dang bat geolocation thi se tu dong dien vao o diem xuat phat
   useEffect(() => {
     if (userLocation) {
       setStartInput("Vị trí của bạn");
     }
-  }, [userLocation]);
-
-  // neu co building duoc chon tu search thi se dien vao o diem den
-  useEffect(() => {
+    // Neu da co building duoc chon thi tu dong dien vao o diem den
     if (building) {
       setEndInputSearch(building.name || "");
     }
-  }, [building]);
+  }, [userLocation, building]);
 
   // Xử lý phần gợi ý tìm kiếm
   useEffect(() => {
@@ -169,12 +188,14 @@ export default function showOptionRoute({
     return () => clearTimeout(timeoutId);
   }, [startInput, endInputSearch, activeInput, map]);
 
+  // Hàm xử lý khi người dùng nhấn nút tìm đường
   const handleRouteSearch = async () => {
     if (!map) return;
 
     let startCoords: [number, number] | null = null;
     let startStr = startInput.trim();
 
+    // kiem tra co bat geolocation va nguoi dung chon dung vi tri ca nhan hay khong
     if (startStr === "Vị trí của bạn" && userLocation) {
       startCoords = userLocation;
     } else {
@@ -224,12 +245,13 @@ export default function showOptionRoute({
     // Kiểm tra tồn tại của phòng (e.g. 101/DI or just room number if building known)
     let isRoomSearch = false;
     const parts = endStr.split("/");
-    isRoomSearch = parts.length > 1 || /^\d+$/.test(endStr); // Contains building code or starts with digits
+    isRoomSearch = parts.length > 1 || /^\d+$/.test(endStr); // Nếu có dấu "/" hoặc chỉ là số, coi như đang tìm kiếm phòng
 
     if (isRoomSearch) {
       // tách phần số phòng và mã tòa nhà (nếu có)
       const roomNumber = parts[0];
-      // fallback building code to DI if not provided, assuming DI is default mapped building for now
+
+      // phan nay hien thi ky hieu toa nha
       const buildingID = parts[1] || "";
 
       try {
@@ -238,6 +260,23 @@ export default function showOptionRoute({
           `http://localhost:5001/api/search?room=${roomNumber}&buildingID=${buildingID}`,
         );
         const data = await response.json();
+        const targetNode = data?.targetNode;
+
+        // tao ra 1 khoi tru nho hinh tron de hien thi dich
+        const createCirclePolygon = (lng: number, lat: number) => {
+          const points = 32;
+          const radius = 0.000015; // Tăng bán kính lên một chút để dễ nhìn hơn
+          const coords = [];
+          for (let i = 0; i < points; i++) {
+            const angle = ((i * 360) / points) * (Math.PI / 180);
+            coords.push([
+              lng + radius * Math.cos(angle),
+              lat + radius * Math.sin(angle),
+            ]);
+          }
+          coords.push(coords[0]);
+          return [coords];
+        };
 
         if (!data || data.error) {
           alert("Lỗi tìm kiếm: " + (data?.error || "Không thấy kết quả"));
@@ -290,7 +329,7 @@ export default function showOptionRoute({
           }
           // Đối với lộ trình bên ngoài, sẽ dẫn đến cửa chính của tòa nhà (hardcoded Entrance of CNTT [105.769098, 10.031102] theo mặc định của API)
           // Outdoor routing -> route to entrance of the building (hardcoded Entrance of CNTT [105.769098, 10.031102] according to api default)
-          const entranceCoords: [number, number] = [105.769098, 10.031102];
+          const entranceCoords: [number, number] = [105.768927, 10.03084]; // Cua chinh cua tang 1 CICT
           const routeGeoJSON = await getRoute(startCoords, entranceCoords, map);
 
           if (map.getLayer("route_layer")) {
@@ -359,11 +398,14 @@ export default function showOptionRoute({
         return;
       }
 
+      // Tìm lộ trình từ điểm bắt đầu đến điểm kết thúc
       const routeGeoJSON = await getRoute(startCoords, endCoords, map);
       if (map.getLayer("route_layer")) {
         map.setLayoutProperty("route_layer", "visibility", "visible");
       }
 
+      // Phóng to bản đồ để hiển thị toàn bộ lộ trình
+      //bbox la mot boundingbox xung quanh route. Co nghia la lo trinh se duoc bao boc boi 1 cai hop => Dam bao toan bo lo trinh duoc hien thi tren ban do, khong bi cat bo phan nao
       if (routeGeoJSON) {
         const routeBbox = bbox({
           type: "Feature",
@@ -380,6 +422,8 @@ export default function showOptionRoute({
     }
 
     setShow(false);
+
+    return {};
   };
 
   return (

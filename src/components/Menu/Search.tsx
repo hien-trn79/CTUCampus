@@ -60,6 +60,18 @@ export default function Search({
             .filter((f: any) =>
               f.properties?.name?.toLowerCase().includes(query.toLowerCase()),
             )
+            .sort((a: any, b: any) => {
+              const nameA = (a.properties?.name || "").toLowerCase();
+              const nameB = (b.properties?.name || "").toLowerCase();
+
+              const keywords = ["công nghệ thông tin", "cntt", "cict", "di"];
+              const aIsPriority = keywords.some((k) => nameA.includes(k));
+              const bIsPriority = keywords.some((k) => nameB.includes(k));
+
+              if (aIsPriority && !bIsPriority) return -1;
+              if (!aIsPriority && bIsPriority) return 1;
+              return nameA.localeCompare(nameB);
+            })
             .map((f: any) => ({
               display_name: f.properties.name + " (Trường ĐH Cần Thơ)",
               lat: center(f).geometry.coordinates[1],
@@ -226,17 +238,13 @@ export default function Search({
               ) as HTMLSelectElement;
               if (floorSelect) floorSelect.value = "1";
             }
-            let zoomIn = true;
             const center: [number, number] = [105.769098, 10.031102];
-            const mapZoom = mapInstance.getZoom();
-            const delta =
-              (zoomIn ? 1.5 : -1.5) + getZoomAdjustment(center[1], 10);
             const zoomG = 19.36992042154802;
             const zoomOne = 18.999999;
 
-            if (data.targetFloor === 0)
+            if (dataSearch.targetFloor === 0)
               mapInstance.easeTo({ center, zoom: zoomG, duration: 1000 });
-            else if (data.targetFloor === 1)
+            else if (dataSearch.targetFloor === 1)
               mapInstance.easeTo({ center, zoom: zoomOne, duration: 1000 });
 
             setIsShowResult(true);
