@@ -131,6 +131,3 @@ CTU Campus 3D là ứng dụng web giúp sinh viên và khách tham quan dễ d�
 This project is for **academic purposes** at Can Tho University.  
 Dự án này phục vụ **mục đích học tập** tại Đại học Cần Thơ.  
 
-```
-
-Would you like me to also create a **step-by-step demo guide** (with screenshots placeholders) so users can follow along visually, or keep the README concise?
