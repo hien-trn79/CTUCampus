@@ -29,6 +29,18 @@ export default function Map() {
   const [currentMarkers, setCurrentMarkers] = useState<maplibregl.Marker[]>([]);
   const [currentPoints, setCurrentPoints] = useState<[number, number][]>([]);
 
+  // Thêm mảng tham chiếu để giữ trạng thái cho các map callbacks mà không cần chờ re-render
+  const mapStateRef = useRef({
+    markers: [] as maplibregl.Marker[],
+    points: [] as [number, number][],
+  });
+
+  const syncState = (markers: maplibregl.Marker[], points: [number, number][]) => {
+    mapStateRef.current = { markers, points };
+    setCurrentMarkers(markers);
+    setCurrentPoints(points);
+  };
+
   // --------------------- Functions ----------------
   // Xu ly thao tac zoom den
   function getZoomAdjustment(oldLatitude: number, newLatitude: number) {
@@ -46,10 +58,10 @@ export default function Map() {
   });
 
   const cleanMakers = () => {
-    currentMarkers.forEach((marker) => {
-      marker.remove();
+    setCurrentMarkers((prev) => {
+      prev.forEach((marker) => marker.remove());
+      return [];
     });
-    setCurrentMarkers([]);
     setCurrentPoints([]);
   };
 
@@ -169,10 +181,14 @@ export default function Map() {
       const btn = document.querySelector(".button_find_route");
       if (!isEditingCTU) {
         isEditingCTU = true;
-        currentMarkers.forEach((m) => m.remove());
-        currentPoints.length = 0; // Clear points array
-        setCurrentMarkers([]);
-        setCurrentPoints([]);
+        setCurrentMarkers((prev) => {
+          prev.forEach((m) => m.remove());
+          return [];
+        });
+        setCurrentPoints((prev) => {
+          // Clear points array
+          return [];
+        });
 
         // Reset layer
         const source = map.getSource("route") as maplibregl.GeoJSONSource;
@@ -266,15 +282,26 @@ export default function Map() {
           .addTo(map);
 
         setCurrentMarkers((prev) => [...prev, marker]);
-        setCurrentPoints((prev) => [
-          ...prev,
-          centerPoint.geometry.coordinates as [number, number],
-        ]);
+        setCurrentPoints((prev) => {
+          const newPoints = [...prev, centerPoint.geometry.coordinates as [number, number]];
+          // Thay vì sử dụng currentPoints stale closure, chúng ta cập nhật state
+          return newPoints;
+        });
+        
+        // Mutate trực tiếp mảng closure để logic kiểm tra (currentPoints.length) bên dưới (hoặc trong map.on('click')) chạy đúng tạm thời (bởi react state thay đổi async)
+        currentMarkers.push(marker);
+        currentPoints.push(centerPoint.geometry.coordinates as [number, number]);
+        
         return; // Không mở menu bar khi đang mode tìm đường
       }
 
       // Xử lý bình thường khi click vào tòa nhà (khi không tìm đường)
       // Mở menu bar thay vì tạo marker
+      // Xóa marker lộ trình cũ nếu đang có
+      cleanMakers();
+      if (map.getLayer("route_layer")) {
+        map.setLayoutProperty("route_layer", "visibility", "none");
+      }
       setBuildingClicked(features || null);
       setShowMenuBar(true);
     });
@@ -302,9 +329,13 @@ export default function Map() {
         const lngLat = e.lngLat;
         const coords: [number, number] = [lngLat.lng, lngLat.lat];
 
-        const marker = new maplibregl.Marker({
-          color: currentPoints.length === 0 ? "green" : "red",
-        })
+        // Do currentPoints and currentMarkers bị kẹt closure của useEffect[]
+        // ta nên lấy số lượng thực tế bằng cách queryDOM hoặc đếm trong state
+        // nhưng tạm thời có thể dựa vào length của currentPoints do ta đã push trực tiếp
+        // để trick cái đoạn màu sắc
+        const color = currentPoints.length === 0 ? "green" : "red";
+        
+        const marker = new maplibregl.Marker({ color })
           .setLngLat(coords)
           .setPopup(
             new maplibregl.Popup().setHTML(
@@ -313,9 +344,18 @@ export default function Map() {
           )
           .addTo(map);
 
+        setCurrentMarkers((prev) => [...prev, marker]);
+        setCurrentPoints((prev) => [...prev, coords]);
+
+        // Cập nhật stale closure
         currentMarkers.push(marker);
         currentPoints.push(coords);
         return;
+      }
+      
+      cleanMakers(); // clear đường đi cũ khi chọn địa điểm mới ngoài đường phố
+      if (map.getLayer("route_layer")) {
+        map.setLayoutProperty("route_layer", "visibility", "none");
       }
       setShowMenuBar(false);
       showMenuBarRef.current = false;

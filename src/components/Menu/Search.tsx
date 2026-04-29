@@ -32,10 +32,10 @@ export default function Search({
   const markerRef = useRef<maplibregl.Marker | null>(null);
 
   const cleanMarkers = () => {
-    currentMarkers.forEach((marker) => {
-      marker.remove();
+    setCurrentMarkers((prev) => {
+      prev.forEach((marker: maplibregl.Marker) => marker.remove());
+      return [];
     });
-    setCurrentMarkers([]);
     setCurrentPoints([]);
     if (markerRef.current) {
       markerRef.current.remove();

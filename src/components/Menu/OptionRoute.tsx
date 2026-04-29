@@ -249,9 +249,15 @@ export default function showOptionRoute({
     let endStr = endInputSearch.trim();
     if (!endStr) return;
 
-    currentMarkers.forEach((m) => m.remove());
-    setCurrentMarkers([]);
+    setCurrentMarkers((prev) => {
+      prev.forEach((m: { remove: () => any }) => m.remove());
+      return [];
+    });
     setCurrentPoints([]);
+
+    if (map.getLayer("route_layer")) {
+      map.setLayoutProperty("route_layer", "visibility", "none");
+    }
 
     // Kiểm tra tồn tại của phòng (e.g. 101/DI or just room number if building known)
     let isRoomSearch = false;
