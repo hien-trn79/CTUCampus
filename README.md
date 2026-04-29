@@ -1,4 +1,4 @@
-```markdown
+
 # CTU Campus 3D – Classroom Finder Application  
 Ứng dụng hỗ trợ tìm vị trí phòng học trong các nhà học tại Khu II Đại học Cần Thơ kết hợp hình ảnh 3D trực quan
 
