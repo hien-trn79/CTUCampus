@@ -1,5 +1,3 @@
-Here’s a polished bilingual **README.md** file you can copy directly into your project. It introduces the project, explains its purpose, and provides clear usage instructions in both **English** and **Vietnamese**.
-
 ```markdown
 # CTU Campus 3D – Classroom Finder Application  
 Ứng dụng hỗ trợ tìm vị trí phòng học trong các nhà học tại Khu II Đại học Cần Thơ kết hợp hình ảnh 3D trực quan
